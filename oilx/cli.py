@@ -201,11 +201,34 @@ def main(argv: list[str] | None = None) -> int:
                 # last value the bot itself recorded is a sound stand-in - and it is
                 # labelled as such in the health report, never passed off as live.
                 net_err.append(f"OVX: {type(e).__name__}")
-                try:
-                    sigma = float(_json.loads((out_dir / "health.json").read_text())["sigma"])
-                    sources["sigma"] = "last recorded OVX (live quote unavailable)"
-                except Exception:
-                    try:
+                sigma = None
+                try:  # 1) FRED publishes the CBOE's OVX close daily, free and keyless
+                    import io as _io
+                    import pandas as _pd
+                    import requests as _rq
+                    r = _rq.get("https://fred.stlouisfed.org/graph/fredgraph.csv",
+                                params={"id": "OVXCLS"}, timeout=30,
+                                headers={"User-Agent": "oilx/0.1 (student research)"})
+                    r.raise_for_status()
+                    col = _pd.to_numeric(_pd.read_csv(_io.StringIO(r.text)).iloc[:, 1],
+                                         errors="coerce").dropna()
+                    if len(col) and 5 < float(col.iloc[-1]) < 400:
+                        sigma = float(col.iloc[-1]) / 100
+                        sources["sigma"] = "OVX previous close from FRED (live quote unavailable)"
+                except Exception as e2:
+                    net_err.append(f"FRED OVX: {type(e2).__name__}")
+                if sigma is None:
+                    try:  # 2) the last value this bot recorded FROM A REAL SOURCE - a stale
+                        # stand-in must never be recycled as if it were a measurement
+                        hj = _json.loads((out_dir / "health.json").read_text())
+                        src = str(hj.get("sources", {}).get("sigma", ""))
+                        if src.startswith("OVX live") or "FRED" in src:
+                            sigma = float(hj["sigma"])
+                            sources["sigma"] = "last OVX this bot measured (live quote unavailable)"
+                    except Exception:
+                        pass
+                if sigma is None:
+                    try:  # 3) the daily file, however old - labelled as such
                         import pandas as _pd
                         sigma = float(_pd.read_csv(cfg.raw_dir / "ovx_daily.csv").iloc[-1, 1]) / 100
                         sources["sigma"] = "OVX from the daily file (live quote unavailable)"

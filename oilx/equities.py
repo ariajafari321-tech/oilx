@@ -145,7 +145,7 @@ LEXICON: list[tuple[str, float]] = [
 
 # A conflict headline that is being called OFF is bearish, not bullish: "new strikes on
 # Iran unlikely" matched "strikes on" and scored +1 in the live log of 2026-11-09.
-NEGATORS = r"unlikely|rules? out|ruled out|calls? off|called off|no (new|further|more)|eas(es|ed|ing)|fad(es|ed|ing)|averted|avoid(s|ed)?|denies|denied|walks? back"
+NEGATORS = r"unlikely|rules? out|ruled out|calls? off|called off|no (new|further|more)|eas(es|ed|ing)|fad(es|ed|ing)|averted|avoid(s|ed)?|denies|denied|walks? back|downplay|optimism|hopes? (of|for)"
 
 GOOGLE_NEWS = ("https://news.google.com/rss/search?q={q}&hl=en-US&gl=US&ceid=US:en")
 
