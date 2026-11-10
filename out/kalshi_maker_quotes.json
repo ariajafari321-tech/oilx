@@ -1,0 +1,47 @@
+[
+ {
+  "ticker": "KXWTI-26NOV3014-T84.49",
+  "side": "yes",
+  "price": 0.28,
+  "fair": 0.3235,
+  "oi": 487.04,
+  "close_time": "2026-11-30T19:30:00Z",
+  "mid": 0.285,
+  "fwd": 83.12636363636364,
+  "sigma": 0.45860000610351564,
+  "book_bid": 0.28,
+  "book_ask": 0.29,
+  "t_hours": 57.11,
+  "underlying": "WTI"
+ },
+ {
+  "ticker": "KXWTI-26NOV3014-T83.49",
+  "side": "yes",
+  "price": 0.42,
+  "fair": 0.4458,
+  "oi": 392.68,
+  "close_time": "2026-11-30T19:30:00Z",
+  "mid": 0.42,
+  "fwd": 83.12636363636364,
+  "sigma": 0.45860000610351564,
+  "book_bid": 0.4,
+  "book_ask": 0.44,
+  "t_hours": 57.11,
+  "underlying": "WTI"
+ },
+ {
+  "ticker": "KXWTI-26NOV3014-T81.49",
+  "side": "no",
+  "price": 0.19,
+  "fair": 0.3021,
+  "oi": 359.56,
+  "close_time": "2026-11-30T19:30:00Z",
+  "mid": 0.82,
+  "fwd": 83.12636363636364,
+  "sigma": 0.45860000610351564,
+  "book_bid": 0.16,
+  "book_ask": 0.2,
+  "t_hours": 57.11,
+  "underlying": "WTI"
+ }
+]
