@@ -1,0 +1,25 @@
+# The oilx bot, running on GitHub's servers instead of a laptop.
+# No laptop, no campus Wi-Fi: the schedule below is the "auto-trade" switch.
+name: oilx cycle
+on:
+  schedule:
+    - cron: "17 10-22 * * 1-5"   # hourly through the New York trading day, Mon-Fri
+    - cron: "17 2,6 * * 2-6"     # two overnight checks
+    - cron: "17 */6 * * 0,6"     # weekends: every six hours
+  workflow_dispatch:             # "Run workflow" button = run a cycle now
+permissions:
+  contents: write
+concurrency:
+  group: oilx-state
+  cancel-in-progress: false
+jobs:
+  cycle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/bot-run
+        with:
+          mode: cycle
+          key-id: ${{ secrets.KALSHI_DEMO_KEY_ID }}
+          private-key: ${{ secrets.KALSHI_DEMO_PRIVATE_KEY }}

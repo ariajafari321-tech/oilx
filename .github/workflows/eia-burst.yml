@@ -1,0 +1,27 @@
+# EIA release mode. The weekly inventory report lands Wednesday 10:30am New York;
+# this runs the bot every 2 minutes from 10:27 to 11:37 so the repricing is caught as it
+# happens. Two UTC start times cover both daylight-saving states - the run that is not
+# within 45 minutes of 10:27 New York exits immediately.
+# Holiday weeks: the report moves to Thursday. Use "Run workflow" by hand that morning.
+name: oilx EIA burst
+on:
+  schedule:
+    - cron: "5 14 * * 3"
+    - cron: "5 15 * * 3"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: oilx-state
+  cancel-in-progress: false
+jobs:
+  burst:
+    runs-on: ubuntu-latest
+    timeout-minutes: 130
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/bot-run
+        with:
+          mode: burst
+          key-id: ${{ secrets.KALSHI_DEMO_KEY_ID }}
+          private-key: ${{ secrets.KALSHI_DEMO_PRIVATE_KEY }}

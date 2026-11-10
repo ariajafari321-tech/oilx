@@ -1,0 +1,546 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>oilx control room</title>
+<!--
+  The oilx control room. One file + one vendored chart library; no CDN, no build step,
+  no network needed beyond the state it reads. It runs two ways from the same source:
+    local  - served by `python -m oilx serve`; reads api/state; controls are live
+    cloud  - a static copy published next to state.json; read-only
+-->
+<style>
+:root {
+  color-scheme: dark;
+  --bg: #0e1719; --surface: #121c1f; --raised: #18262a; --line: #24363b;
+  --text: #e8ece9; --text-2: #a9b8b6; --muted: #7d8f8d;
+  --series-1: #3987e5; --series-2: #d95926;
+  --pos: #3987e5; --neg: #e66767; --mid: #2c3d41;
+  --good: #0ca30c; --warning: #fab219; --serious: #ec835a; --critical: #d03b3b;
+  --display: Bahnschrift, "DIN Alternate", "DIN 2014", "Roboto Condensed", "Arial Narrow", system-ui, sans-serif;
+  --body: "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --logface: Consolas, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: light) {
+  :root:where(:not([data-theme="dark"])) {
+    color-scheme: light;
+    --bg: #e9eeec; --surface: #f4f6f5; --raised: #ffffff; --line: #d3dbd8;
+    --text: #101816; --text-2: #46534f; --muted: #66746f;
+    --series-1: #2a78d6; --series-2: #eb6834;
+    --pos: #2a78d6; --neg: #e34948; --mid: #dfe5e3;
+  }
+}
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #e9eeec; --surface: #f4f6f5; --raised: #ffffff; --line: #d3dbd8;
+  --text: #101816; --text-2: #46534f; --muted: #66746f;
+  --series-1: #2a78d6; --series-2: #eb6834;
+  --pos: #2a78d6; --neg: #e34948; --mid: #dfe5e3;
+}
+* { box-sizing: border-box; }
+html { background: var(--bg); }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font: 15px/1.5 var(--body); font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+}
+.wrap { max-width: 1320px; margin: 0 auto; padding: 28px 24px 56px; }
+h1, h2, .num { font-family: var(--display); }
+h2 { font-size: 17px; font-weight: 600; margin: 0 0 12px; letter-spacing: .01em; }
+a { color: inherit; text-underline-offset: 3px; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--series-1); outline-offset: 2px; }
+
+/* ---- the state of the machine: the one loud thing on the page ---- */
+.top { display: grid; grid-template-columns: 1fr auto; gap: 24px 40px; align-items: start; }
+.brand { font: 600 15px var(--display); color: var(--muted); margin: 0 0 6px; letter-spacing: .04em; }
+#headline {
+  font: 600 clamp(26px, 3.4vw, 44px)/1.12 var(--display); font-stretch: 87%;
+  margin: 0; max-width: 21em; text-wrap: balance;
+}
+#headline .state { display: inline-flex; align-items: baseline; gap: .28em; }
+#headline .dot { width: .42em; height: .42em; border-radius: 50%; display: inline-block; transform: translateY(-.08em); }
+#subline { color: var(--text-2); margin: 10px 0 0; max-width: 62ch; }
+.controls { display: flex; flex-direction: column; gap: 10px; align-items: stretch; min-width: 232px; }
+.controls .row { display: flex; gap: 8px; }
+.btn {
+  background: var(--raised); border: 1px solid var(--line); border-radius: 6px;
+  padding: 8px 14px; cursor: pointer; flex: 1; white-space: nowrap;
+}
+.btn:hover { border-color: var(--muted); }
+.btn[disabled] { opacity: .5; cursor: default; }
+.btn.danger { border-color: var(--critical); color: var(--text); background: color-mix(in srgb, var(--critical) 16%, var(--raised)); }
+.btn.go { border-color: var(--good); background: color-mix(in srgb, var(--good) 14%, var(--raised)); }
+.switch { display: flex; align-items: center; justify-content: space-between; gap: 14px;
+  background: var(--raised); border: 1px solid var(--line); border-radius: 6px; padding: 8px 12px; cursor: pointer; }
+.switch .track { width: 40px; height: 22px; border-radius: 11px; background: var(--mid); position: relative; flex: none; transition: background .15s; }
+.switch .track::after { content: ""; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: var(--text); transition: transform .15s; }
+.switch[aria-checked="true"] .track { background: var(--good); }
+.switch[aria-checked="true"] .track::after { transform: translateX(18px); }
+.cloudnote { color: var(--text-2); font-size: 13.5px; max-width: 30ch; margin: 0; }
+
+.facts { display: flex; flex-wrap: wrap; gap: 6px 36px; margin: 26px 0 0; padding: 16px 0 0; border-top: 1px solid var(--line); }
+.fact { min-width: 96px; }
+.fact dt { color: var(--muted); font-size: 13px; }
+.fact dd { margin: 0; font: 600 22px/1.25 var(--display); }
+.fact dd small { font: 400 13px var(--body); color: var(--text-2); margin-left: 4px; }
+
+/* ---- health checks ---- */
+.checks { list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(168px, 1fr)); gap: 0; margin: 22px 0 0; padding: 0;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.checks li { padding: 12px 14px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); margin: 0 -1px -1px 0; }
+.checks .name { display: flex; align-items: center; gap: 8px; font-weight: 600; }
+.checks .detail { color: var(--text-2); font-size: 13px; margin-top: 2px; }
+.ico { width: 16px; height: 16px; flex: none; }
+
+/* ---- panels ---- */
+.grid { display: grid; grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr); gap: 20px; margin-top: 20px; }
+.grid.even { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 18px 20px; min-width: 0; }
+.tabs { display: flex; gap: 2px; margin: -4px 0 14px -8px; flex-wrap: wrap; }
+.tab { background: none; border: 0; border-bottom: 2px solid transparent; padding: 6px 8px; margin-right: 8px; cursor: pointer; color: var(--text-2); font: 600 15px var(--display); }
+.tab[aria-selected="true"] { color: var(--text); border-bottom-color: var(--text); }
+.chartbox { height: 340px; position: relative; }
+.chartnote { color: var(--text-2); font-size: 13px; margin: 10px 0 0; max-width: 78ch; }
+.legend { display: flex; gap: 18px; font-size: 13px; color: var(--text-2); margin-bottom: 4px; flex-wrap: wrap; }
+.legend i { display: inline-block; width: 14px; height: 3px; border-radius: 2px; vertical-align: middle; margin-right: 6px; }
+.legend i.dotkey { width: 9px; height: 9px; border-radius: 50%; }
+.legend i.band { height: 10px; background: color-mix(in srgb, var(--text) 9%, transparent); border-radius: 2px; }
+svg text { font: 12px var(--body); fill: var(--muted); font-variant-numeric: tabular-nums; }
+.tip { position: absolute; pointer-events: none; background: var(--raised); border: 1px solid var(--line); border-radius: 6px;
+  padding: 8px 10px; font-size: 13px; line-height: 1.45; box-shadow: 0 6px 20px rgba(0,0,0,.28); white-space: nowrap; z-index: 3; display: none; }
+.tip b { font-family: var(--display); font-size: 14px; }
+
+/* signals */
+.sig { display: grid; grid-template-columns: 9.2em 1fr 3.2em; gap: 10px; align-items: center; padding: 7px 0; }
+.sig .lab { color: var(--text-2); }
+.sig .val { text-align: right; font: 600 15px var(--display); }
+.sig .track { height: 12px; position: relative; background: linear-gradient(var(--muted), var(--muted)) center/1px 100% no-repeat, linear-gradient(var(--mid), var(--mid)) center/100% 2px no-repeat; }
+.sig .bar { position: absolute; top: 1px; bottom: 1px; }
+.sig .bar.p { left: 50%; background: var(--pos); border-radius: 0 4px 4px 0; }
+.sig .bar.n { right: 50%; background: var(--neg); border-radius: 4px 0 0 4px; }
+.verdict { border-top: 1px solid var(--line); margin-top: 10px; padding-top: 12px; color: var(--text-2); }
+.verdict strong { color: var(--text); font: 600 19px var(--display); display: block; margin-bottom: 2px; }
+.axisnote { display: flex; justify-content: space-between; color: var(--muted); font-size: 12px; margin: 0 3.2em 2px 9.2em; padding: 0 10px; }
+
+/* tables */
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th { text-align: left; font-weight: 500; color: var(--muted); font-size: 13px; padding: 0 10px 6px 0; border-bottom: 1px solid var(--line); }
+td { padding: 7px 10px 7px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr:last-child td { border-bottom: 0; }
+td.r, th.r { text-align: right; padding-right: 0; padding-left: 14px; white-space: nowrap; }
+.kind { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.empty { color: var(--text-2); margin: 4px 0 0; max-width: 56ch; }
+.scroll { max-height: 400px; overflow: auto; }
+
+/* equity desk */
+.pick { font: 600 24px/1.2 var(--display); margin: 0 0 4px; }
+.pick small { font: 400 14px var(--body); color: var(--text-2); margin-left: 8px; }
+.sw { margin: 10px 0 0; padding: 0; list-style: none; color: var(--text-2); font-size: 14px; }
+.sw li { padding-left: 1.3em; text-indent: -1.3em; }
+.rank { display: grid; grid-template-columns: 3.4em 6.2em 1fr 3em; gap: 8px; align-items: center; padding: 3px 0; font-size: 14px; }
+.rank .t { font: 600 14px var(--display); }
+.rank .b { color: var(--muted); font-size: 13px; }
+.rank .v { text-align: right; }
+.heads { margin: 0; padding: 0; list-style: none; font-size: 14px; color: var(--text-2); }
+.heads li { display: flex; gap: 8px; padding: 4px 0; }
+.sub { font: 600 14px var(--display); color: var(--text-2); margin: 16px 0 6px; }
+
+details.log { margin-top: 20px; }
+details.log summary { cursor: pointer; color: var(--text-2); }
+pre { font: 12.5px/1.5 var(--logface); color: var(--text-2); white-space: pre-wrap; margin: 12px 0 0; max-height: 340px; overflow: auto; }
+footer { color: var(--muted); font-size: 12.5px; margin-top: 28px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+dialog { background: var(--raised); color: var(--text); border: 1px solid var(--line); border-radius: 10px; padding: 22px 24px; max-width: 420px; }
+dialog::backdrop { background: rgba(0,0,0,.55); }
+dialog h2 { font-size: 20px; }
+dialog p { color: var(--text-2); margin: 0 0 18px; }
+dialog .row { display: flex; gap: 8px; justify-content: flex-end; }
+dialog .btn { flex: none; }
+#toast { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); background: var(--raised); border: 1px solid var(--line);
+  border-radius: 8px; padding: 10px 16px; display: none; max-width: 80vw; white-space: pre-wrap; z-index: 9; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+@media (max-width: 900px) {
+  .top { grid-template-columns: 1fr; }
+  .grid, .grid.even { grid-template-columns: minmax(0, 1fr); }
+  .wrap { padding: 18px 14px 40px; }
+  .chartbox { height: 280px; }
+  .kind { white-space: normal; }
+  td, th { padding-right: 8px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <p class="brand">oilx control room</p>
+      <h1 id="headline">Connecting to the bot…</h1>
+      <p id="subline"></p>
+    </div>
+    <div class="controls" id="controls"></div>
+  </header>
+
+  <dl class="facts" id="facts"></dl>
+  <ul class="checks" id="checks" aria-label="System checks"></ul>
+
+  <div class="grid">
+    <section class="panel" aria-label="Charts">
+      <div class="tabs" role="tablist" id="tabs">
+        <button class="tab" role="tab" data-tab="strip" aria-selected="true">Model vs market</button>
+        <button class="tab" role="tab" data-tab="price" aria-selected="false">WTI price</button>
+        <button class="tab" role="tab" data-tab="crack" aria-selected="false">Refining margin</button>
+        <button class="tab" role="tab" data-tab="balance" aria-selected="false">Account</button>
+      </div>
+      <div id="pane-strip">
+        <div class="legend" id="strip-legend"></div>
+        <div class="chartbox" id="strip"><div class="tip" id="strip-tip"></div></div>
+        <p class="chartnote" id="strip-note"></p>
+        <details><summary class="chartnote" style="cursor:pointer">Show as table</summary><div class="scroll" id="strip-table"></div></details>
+      </div>
+      <div id="pane-price" hidden><div class="chartbox" id="price"></div><p class="chartnote">WTI front-month futures, daily closes. The bot's five signals are computed from this series and the public reports that move it.</p></div>
+      <div id="pane-crack" hidden><div class="chartbox" id="crack"></div><p class="chartnote">The 3-2-1 crack spread: what a refinery earns per barrel turning crude into gasoline and diesel. Fat margins pull more crude through the system.</p></div>
+      <div id="pane-balance" hidden><div class="chartbox" id="balance"></div><p class="chartnote">Practice-account balance on Kalshi's demo exchange, recorded every cycle.</p></div>
+    </section>
+
+    <section class="panel" aria-label="Signals">
+      <h2>What the signals say about crude</h2>
+      <div class="axisnote"><span>bearish</span><span>bullish</span></div>
+      <div id="signals"></div>
+      <div class="verdict" id="verdict"></div>
+    </section>
+  </div>
+
+  <div class="grid even">
+    <section class="panel" aria-label="Quotes and fills">
+      <h2>Quotes and fills</h2>
+      <div class="scroll" id="blotter"></div>
+    </section>
+    <section class="panel" aria-label="Equity desk">
+      <h2>Which oil stock carries this view best</h2>
+      <div id="equity"></div>
+    </section>
+  </div>
+
+  <details class="log panel"><summary>Activity log</summary><pre id="log"></pre></details>
+
+  <footer>
+    <span id="foot"></span>
+    <span>Practice money only. Charts by <a href="https://www.tradingview.com/" rel="noopener">TradingView</a> Lightweight Charts.</span>
+  </footer>
+</div>
+
+<dialog id="confirm"><h2 id="c-title"></h2><p id="c-body"></p>
+  <div class="row"><button class="btn" id="c-no">Cancel</button><button class="btn danger" id="c-yes"></button></div></dialog>
+<div id="toast" role="status"></div>
+
+<script src="vendor/lightweight-charts.js"></script>
+<script>
+"use strict";
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const money = (v) => v == null ? "–" : "$" + Number(v).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const signed = (v, d = 2) => (v >= 0 ? "+" : "−") + Math.abs(v).toFixed(d);
+const cents = (p) => Math.round(p * 100) + "¢";
+
+let S = null, live = false, tab = "strip", charts = {}, lastGood = 0;
+
+const ICONS = {
+  good: '<svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7" fill="var(--good)"/><path d="M4.6 8.3l2.2 2.2 4.6-4.9" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  warning: '<svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.2l7.2 13H.8z" fill="var(--warning)"/><path d="M8 6v4" stroke="#1a1a19" stroke-width="1.8" stroke-linecap="round"/><circle cx="8" cy="12.1" r="1" fill="#1a1a19"/></svg>',
+  critical: '<svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><rect x="1" y="1" width="14" height="14" rx="3" fill="var(--critical)"/><path d="M5 5l6 6M11 5l-6 6" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg>',
+  idle: '<svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2" fill="none" stroke="var(--muted)" stroke-width="1.6"/></svg>',
+};
+const STATE_WORD = { good: "OK", warning: "Needs a look", critical: "Broken", idle: "No data yet" };
+
+function ago(tsSec) {
+  if (!tsSec) return "never";
+  const m = Math.max(0, (Date.now() / 1000 - tsSec) / 60);
+  if (m < 1.5) return "just now";
+  if (m < 90) return Math.round(m) + " min ago";
+  if (m < 36 * 60) return Math.round(m / 60) + " h ago";
+  return Math.round(m / 1440) + " days ago";
+}
+const isoSec = (iso) => iso ? Date.parse(iso) / 1000 : 0;
+
+/* KXWTI-26NOV1014-T86.49 -> "WTI above $86.49, Nov 10" */
+function market(ticker) {
+  const m = /^KX(WTI|BRENT)\w*-(\d{2})([A-Z]{3})(\d{2})\d*-([TB])([\d.]+)$/.exec(ticker || "");
+  if (!m) return ticker || "";
+  const mon = m[3][0] + m[3].slice(1).toLowerCase();
+  const what = m[5] === "T" ? "above $" + m[6] : "near $" + m[6];
+  return (m[1] === "WTI" ? "WTI " : "Brent ") + what + ", " + mon + " " + Number(m[4]);
+}
+
+/* ---------- the headline: the state of the machine in one sentence ---------- */
+function headline() {
+  const h = S.health, scanAge = h ? (Date.now() / 1000 - isoSec(h.ts)) / 60 : Infinity;
+  const nMk = h && h.series ? Object.values(h.series).reduce((a, s) => a + s.markets, 0) : 0;
+  const staged = h && h.maker ? h.maker.staged : 0, fills = (S.shadow_fills || []).length;
+  let word, tone, rest;
+  if (S.killed) { word = "Stopped"; tone = "critical"; rest = "The kill switch is on. Nothing trades until you resume."; }
+  else if (!h) { word = "Waiting"; tone = "idle"; rest = "No cycle has reported in yet."; }
+  else if (h.schema_suspect) { word = "Blind"; tone = "critical"; rest = "Market data is arriving in a shape the parser can't read. Any “no signals” right now means nothing."; }
+  else if (h.ok === false) { word = "Cut off"; tone = "critical"; rest = "The last cycle couldn't reach the exchange. That is usually the network it ran on."; }
+  else if (scanAge > 150) { word = "Quiet"; tone = "warning"; rest = "The last cycle reported " + ago(isoSec(h.ts)) + ". The scheduler may not be running."; }
+  else {
+    word = S.autotrade ? "Hunting" : "Armed"; tone = S.autotrade ? "good" : "idle";
+    const sig = h.signals ? h.signals.main + h.signals.probe : 0;
+    rest = "Last cycle read " + nMk + " markets, " + (sig ? "found " + sig + (sig === 1 ? " signal" : " signals") : "found no mispricing")
+         + " and left " + staged + (staged === 1 ? " quote" : " quotes") + " resting." + (S.autotrade ? "" : " Auto-trade is off.");
+  }
+  $("headline").innerHTML = '<span class="state"><span class="dot" style="background:var(--' + (tone === "idle" ? "muted" : tone) + ')"></span>' + esc(word) + ".</span> " + esc(rest);
+  const bits = [];
+  if (h) bits.push("Cycle reported " + ago(isoSec(h.ts)));
+  bits.push(fills ? fills + " shadow " + (fills === 1 ? "fill" : "fills") + " on record" : "No fills on record yet");
+  if (S.cycle_running) bits.push("a cycle is running now");
+  $("subline").textContent = bits.join(". ") + ".";
+}
+
+function facts() {
+  const d = S.demo || {}, bal = d.balance ?? d.last_known_balance, pos = (d.positions || []).reduce((a, p) => a + Math.abs(p.position || 0), 0);
+  const carry = (S.curve || []).length ? S.curve[S.curve.length - 1].value : null;
+  const f = [
+    ["Practice balance", money(bal), d.balance == null && bal != null ? "last known" : ""],
+    ["Today", S.daily_pnl == null ? "–" : signed(S.daily_pnl), ""],
+    ["Open contracts", String(pos), (S.resting || []).length ? (S.resting.length + " resting") : ""],
+    ["WTI", S.cl_live ? "$" + S.cl_live.toFixed(2) : (S.cl_last ? "$" + S.cl_last.toFixed(2) : "–"), S.cl_live ? "live" : (S.raw_asof ? "close " + S.raw_asof.slice(5) : "")],
+    ["Oil volatility", (S.ovx_live || S.ovx) ? Math.round(S.ovx_live || S.ovx) + "%" : "–", "OVX"],
+    ["Curve", carry == null ? "–" : Math.round(Math.abs(carry) * 100) + "%", carry == null ? "" : (carry >= 0 ? "backwardation / yr" : "contango / yr")],
+  ];
+  $("facts").innerHTML = f.map(([k, v, n]) => '<div class="fact"><dt>' + esc(k) + "</dt><dd>" + esc(v) + (n ? "<small>" + esc(n) + "</small>" : "") + "</dd></div>").join("");
+}
+
+function checks() {
+  const h = S.health, out = [];
+  const add = (name, state, detail) => out.push({ name, state, detail });
+  if (!h) add("Heartbeat", "idle", "No cycle has written a health report yet.");
+  else {
+    const age = (Date.now() / 1000 - isoSec(h.ts)) / 60;
+    add("Heartbeat", age > 150 ? "warning" : "good", "Last cycle " + ago(isoSec(h.ts)) + (S.mode === "cloud" ? ", on the cloud runner" : ", on this computer"));
+    const ser = h.series ? Object.values(h.series) : [];
+    const mk = ser.reduce((a, s) => a + s.markets, 0), two = ser.reduce((a, s) => a + s.two_sided, 0);
+    if (h.ok === false && !mk) add("Market data", "critical", h.reason || "Nothing came back from the exchange.");
+    else add("Market data", mk ? "good" : "warning", mk + " markets read, " + two + " with a live two-sided quote");
+    add("Data format", h.schema_suspect ? "critical" : (mk ? "good" : "idle"), h.schema_suspect ? "Markets look empty: the exchange changed its field names again." : "Quotes and open interest parse correctly");
+    const ne = (h.network_errors || []).length;
+    add("Network", ne ? (mk ? "warning" : "critical") : "good", ne ? ne + " request" + (ne > 1 ? "s" : "") + " failed last cycle (" + h.network_errors[0] + ")" : "Every request went through");
+    for (const [nm, fc] of Object.entries(h.fwd_check || {})) {
+      const off = fc.gap_sd > fc.limit_sd, label = nm === "WTI" ? "WTI price check" : "Brent price check";
+      add(label, off ? "warning" : "good", off
+        ? "Quote $" + fc.quote.toFixed(2) + " but the market's own strip implies $" + fc.implied.toFixed(2) + ". Too far apart to trust, so these markets are left alone."
+        : "Quote and the market's own strip agree ($" + fc.quote.toFixed(2) + " vs $" + fc.implied.toFixed(2) + ")");
+    }
+    if (h.maker) {
+      const rj = Object.entries(h.maker.rejects || {}).filter(([, v]) => v).sort((a, b) => b[1] - a[1]);
+      const why = { low_oi: "too little open interest", wing: "outside the model's trusted zone", stale_strip: "price moved faster than the book", window: "too close to or far from expiry", price_bounds: "no sensible price", unparsable: "unknown market type" };
+      add("Quoting", h.maker.staged ? "good" : "warning", h.maker.staged ? h.maker.staged + " quotes placed" + (rj.length ? "; " + rj[0][1] + " skipped: " + (why[rj[0][0]] || rj[0][0]) : "")
+        : "No quotes placed" + (rj.length ? ": " + rj[0][1] + " markets " + (why[rj[0][0]] || rj[0][0]) : ""));
+    }
+  }
+  if (S.signal_asof) {
+    const days = (Date.now() - Date.parse(S.signal_asof)) / 864e5;
+    add("Signal inputs", days > 5 ? "warning" : "good", days > 5 ? "Last refreshed " + S.signal_asof + ". Run the data refresh so the signals aren't reading old reports." : "Data through " + S.signal_asof);
+  } else if (S.signal_error) add("Signal inputs", "critical", S.signal_error);
+  const d = S.demo || {};
+  add("Practice account", d.error ? (S.mode === "cloud" ? "warning" : "critical") : "good", d.error ? "Couldn't sign in: " + String(d.error).slice(0, 90) : "Signed in" + (S.api_latency_ms ? " in " + S.api_latency_ms + " ms" : ""));
+  $("checks").innerHTML = out.map((c) => '<li><div class="name">' + ICONS[c.state] + "<span>" + esc(c.name) + '</span><span class="sr"> – ' + STATE_WORD[c.state] + '</span></div><div class="detail">' + esc(c.detail) + "</div></li>").join("");
+}
+
+/* ---------- controls ---------- */
+function controls() {
+  const el = $("controls");
+  if (!live) {
+    const repo = S.repo ? "https://github.com/" + S.repo + "/actions" : null;
+    el.innerHTML = '<p class="cloudnote">A snapshot published by the cloud bot, refreshed after every cycle. '
+      + (repo ? 'Run a cycle, stop or resume from <a href="' + esc(repo) + '" rel="noopener">GitHub Actions</a>.' : "It is read-only.") + "</p>";
+    return;
+  }
+  el.innerHTML =
+    '<div class="switch" role="switch" tabindex="0" id="auto" aria-checked="' + !!S.autotrade + '"><span>Trade automatically every hour</span><span class="track"></span></div>'
+    + '<div class="row"><button class="btn" id="run"' + (S.cycle_running || S.killed ? " disabled" : "") + ">" + (S.cycle_running ? "Cycle running…" : "Run a cycle now") + "</button></div>"
+    + '<div class="row"><button class="btn" id="flat">Close all positions</button>'
+    + (S.killed ? '<button class="btn go" id="resume">Resume</button>' : '<button class="btn danger" id="kill">Stop everything</button>') + "</div>";
+  const auto = $("auto"), flip = () => post("api/autotrade", { on: auto.getAttribute("aria-checked") !== "true" });
+  auto.onclick = flip; auto.onkeydown = (e) => { if (e.key === " " || e.key === "Enter") { e.preventDefault(); flip(); } };
+  $("run").onclick = () => post("api/cycle", {});
+  $("flat").onclick = () => ask("Close all positions?", "Cancels every resting quote and sells every open contract at the market, on the practice account.", "Close all positions", () => post("api/flatten", {}));
+  if ($("kill")) $("kill").onclick = () => ask("Stop everything?", "Turns off the hourly schedule, cancels resting quotes, closes open positions and blocks all trading until you press Resume.", "Stop everything", () => post("api/kill", { on: true }));
+  if ($("resume")) $("resume").onclick = () => post("api/kill", { on: false });
+}
+function ask(title, body, yes, fn) {
+  const d = $("confirm"); $("c-title").textContent = title; $("c-body").textContent = body; $("c-yes").textContent = yes;
+  $("c-yes").onclick = () => { d.close(); fn(); }; $("c-no").onclick = () => d.close(); d.showModal();
+}
+function toast(msg) { const t = $("toast"); t.textContent = msg; t.style.display = "block"; clearTimeout(toast.h); toast.h = setTimeout(() => (t.style.display = "none"), 6000); }
+async function post(url, body) {
+  try {
+    const r = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    const j = await r.json(); toast(j.ok ? (j.message || "Done") : "That didn't work: " + (j.error || r.status));
+  } catch (e) { toast("Couldn't reach the bot on this computer. Is the dashboard window still open?"); }
+  load();
+}
+
+/* ---------- signals ---------- */
+const SIG_NAME = { mom: "Price trend", crack: "Refining margin", inv_level: "Inventory level", inv_surprise: "Inventory surprise", cot: "Crowd positioning" };
+function signals() {
+  const s = S.signals;
+  if (!s) { $("signals").innerHTML = '<p class="empty">' + esc(S.signal_error ? "The signals couldn't be computed: " + S.signal_error : "Signals appear after the first data refresh.") + "</p>"; $("verdict").innerHTML = ""; return; }
+  $("signals").innerHTML = Object.entries(s).map(([k, v]) => {
+    const w = Math.min(50, Math.abs(v) * 50);
+    return '<div class="sig" title="' + esc(SIG_NAME[k] || k) + ": " + signed(v) + ' on a −1 to +1 scale"><span class="lab">' + esc(SIG_NAME[k] || k) + '</span><span class="track"><span class="bar ' + (v >= 0 ? "p" : "n") + '" style="width:' + w + '%"></span></span><span class="val">' + signed(v) + "</span></div>";
+  }).join("");
+  const sc = S.score ?? 0, tp = S.target_pos ?? 0;
+  const lean = Math.abs(sc) < 0.1 ? "No real lean" : (sc > 0 ? "Leaning bullish" : "Leaning bearish");
+  $("verdict").innerHTML = "<strong>" + lean + " (" + signed(sc) + ")</strong>"
+    + "At " + Math.round((S.inst_vol || 0) * 100) + "% volatility the risk budget sizes that as "
+    + (Math.abs(tp) < 0.005 ? "no position" : (tp > 0 ? "long " : "short ") + Math.abs(tp).toFixed(2) + "× the account") + "."
+    + (S.signal_asof ? " Inputs through " + esc(S.signal_asof) + "." : "");
+}
+
+/* ---------- model vs market (hand-drawn SVG) ---------- */
+function strip() {
+  const box = $("strip"), sv = S.strip, tip = $("strip-tip");
+  [...box.querySelectorAll("svg,p")].forEach((n) => n.remove());
+  if (!sv || !sv.rows || sv.rows.length < 3) {
+    box.insertAdjacentHTML("beforeend", '<p class="empty">This fills in after the next cycle reads a full strip of WTI markets.</p>');
+    $("strip-legend").innerHTML = ""; $("strip-note").textContent = ""; $("strip-table").innerHTML = ""; return;
+  }
+  const rows = sv.rows.filter((r) => r.ask < 1 || r.bid > 0);
+  const W = box.clientWidth || 800, H = box.clientHeight || 340, m = { l: 42, r: 64, t: 14, b: 30 };
+  const k0 = rows[0].k, k1 = rows[rows.length - 1].k;
+  const x = (k) => m.l + ((k - k0) / (k1 - k0 || 1)) * (W - m.l - m.r), y = (p) => m.t + (1 - p) * (H - m.t - m.b);
+  const inZone = rows.filter((r) => Math.abs(r.z) <= sv.wing_z);
+  let g = "";
+  if (inZone.length) {
+    const half = (rows[1].k - rows[0].k) / 2, zx0 = x(inZone[0].k - half), zx1 = x(inZone[inZone.length - 1].k + half);
+    g += '<rect x="' + zx0 + '" y="' + m.t + '" width="' + (zx1 - zx0) + '" height="' + (H - m.t - m.b) + '" fill="' + css("--text") + '" opacity=".07"/>';
+  }
+  for (const p of [0, 0.25, 0.5, 0.75, 1]) g += '<line x1="' + m.l + '" x2="' + (W - m.r) + '" y1="' + y(p) + '" y2="' + y(p) + '" stroke="' + css("--line") + '"/><text x="' + (m.l - 8) + '" y="' + (y(p) + 4) + '" text-anchor="end">' + p * 100 + "%</text>";
+  const step = Math.max(1, Math.ceil(rows.length / (W / 70)));
+  rows.forEach((r, i) => { if (i % step === 0) g += '<text x="' + x(r.k) + '" y="' + (H - 8) + '" text-anchor="middle">$' + r.k.toFixed(r.k % 1 ? 2 : 0) + "</text>"; });
+  if (sv.fwd >= k0 && sv.fwd <= k1) g += '<line x1="' + x(sv.fwd) + '" x2="' + x(sv.fwd) + '" y1="' + m.t + '" y2="' + (H - m.b) + '" stroke="' + css("--muted") + '" stroke-dasharray="3 4"/><text x="' + (x(sv.fwd) + 6) + '" y="' + (m.t + 11) + '">WTI now $' + sv.fwd.toFixed(2) + "</text>";
+  const c1 = css("--series-1"), c2 = css("--series-2"), bg = css("--surface");
+  for (const r of rows) g += '<line x1="' + x(r.k) + '" x2="' + x(r.k) + '" y1="' + y(r.bid) + '" y2="' + y(r.ask) + '" stroke="' + c2 + '" stroke-width="2" opacity=".55"/>';
+  g += '<path d="' + rows.map((r, i) => (i ? "L" : "M") + x(r.k).toFixed(1) + " " + y(r.fair).toFixed(1)).join("") + '" fill="none" stroke="' + c1 + '" stroke-width="2" stroke-linejoin="round"/>';
+  for (const r of rows) g += '<circle cx="' + x(r.k) + '" cy="' + y((r.bid + r.ask) / 2) + '" r="4" fill="' + c2 + '" stroke="' + bg + '" stroke-width="2"/>';
+  const lastR = rows[rows.length - 1], ink = css("--text-2"), ym = y((lastR.bid + lastR.ask) / 2), yf = y(lastR.fair), apart = Math.abs(ym - yf) < 14 ? (ym <= yf ? -7 : 7) : 0;
+  g += '<text x="' + (x(lastR.k) + 10) + '" y="' + (ym + 4 + apart) + '" style="fill:' + ink + '">Market</text><text x="' + (x(lastR.k) + 10) + '" y="' + (yf + 4 - apart) + '" style="fill:' + ink + '">Model</text>';
+  g += '<line id="strip-x" y1="' + m.t + '" y2="' + (H - m.b) + '" stroke="' + css("--muted") + '" style="display:none"/>';
+  box.insertAdjacentHTML("afterbegin", '<svg width="' + W + '" height="' + H + '" role="img" aria-label="Model fair value against market prices by strike">' + g + "</svg>");
+  const svg = box.querySelector("svg"), cross = svg.querySelector("#strip-x");
+  svg.onmousemove = (e) => {
+    const bx = svg.getBoundingClientRect(), px = e.clientX - bx.left;
+    let best = rows[0]; for (const r of rows) if (Math.abs(x(r.k) - px) < Math.abs(x(best.k) - px)) best = r;
+    const mid = (best.bid + best.ask) / 2, gap = best.fair - mid, inside = Math.abs(best.z) <= sv.wing_z;
+    cross.setAttribute("x1", x(best.k)); cross.setAttribute("x2", x(best.k)); cross.style.display = "";
+    tip.innerHTML = "<b>WTI above $" + best.k.toFixed(2) + "</b><br>Market " + cents(best.bid) + " bid, " + cents(best.ask) + " ask<br>Model " + (best.fair * 100).toFixed(1) + "¢"
+      + "<br>Gap " + signed(gap * 100, 1) + "¢" + (inside ? "" : " (outside the trusted zone)") + "<br>" + Math.round(best.oi).toLocaleString() + " contracts open";
+    tip.style.display = "block";
+    const tx = x(best.k) + 14; tip.style.left = (tx + tip.offsetWidth > W ? x(best.k) - tip.offsetWidth - 14 : tx) + "px"; tip.style.top = Math.max(4, e.clientY - bx.top - 30) + "px";
+  };
+  svg.onmouseleave = () => { tip.style.display = "none"; cross.style.display = "none"; };
+  $("strip-legend").innerHTML = '<span><i style="background:' + c1 + '"></i>Model fair value</span><span><i class="dotkey" style="background:' + c2 + '"></i>Market price (bar spans bid to ask)</span><span><i class="band"></i>Zone where the model is trusted</span>';
+  const worst = inZone.length ? Math.max(...inZone.map((r) => Math.abs(r.fair - (r.bid + r.ask) / 2))) : null;
+  $("strip-note").textContent = "The chance WTI settles above each price in " + (sv.t_hours < 48 ? Math.round(sv.t_hours) + " hours" : Math.round(sv.t_hours / 24) + " days") + ", as the market prices it and as the model computes it."
+    + (worst != null ? " Inside the shaded zone they agree within " + (worst * 100).toFixed(1) + "¢, so that is the only place the bot quotes. Outside it the market prices fatter tails than the model does, and the bot stays out." : "");
+  $("strip-table").innerHTML = '<table><thead><tr><th>Above</th><th class="r">Bid</th><th class="r">Ask</th><th class="r">Model</th><th class="r">Gap</th><th class="r">Open</th></tr></thead><tbody>'
+    + rows.map((r) => "<tr><td>$" + r.k.toFixed(2) + '</td><td class="r">' + cents(r.bid) + '</td><td class="r">' + cents(r.ask) + '</td><td class="r">' + (r.fair * 100).toFixed(1) + '¢</td><td class="r">' + signed((r.fair - (r.bid + r.ask) / 2) * 100, 1) + '¢</td><td class="r">' + Math.round(r.oi).toLocaleString() + "</td></tr>").join("") + "</tbody></table>";
+}
+
+/* ---------- time-series charts (vendored Lightweight Charts) ---------- */
+function lineChart(id, data, color, fmt) {
+  const el = $(id);
+  if (!window.LightweightCharts) { el.innerHTML = '<p class="empty">The chart library file is missing (oilx/vendor/lightweight-charts.js).</p>'; return; }
+  if (!data || data.length < 2) { el.innerHTML = '<p class="empty">Not enough history to draw yet.</p>'; delete charts[id]; return; }
+  if (!charts[id]) {
+    el.innerHTML = "";
+    const chart = LightweightCharts.createChart(el, { autoSize: true, handleScale: true, localization: { locale: "en-US" },
+      rightPriceScale: { borderVisible: false }, timeScale: { borderVisible: false, timeVisible: id === "balance" },
+      crosshair: { mode: LightweightCharts.CrosshairMode.Magnet } });
+    charts[id] = { chart, series: chart.addLineSeries({ lineWidth: 2, priceLineVisible: false, priceFormat: { type: "custom", formatter: fmt, minMove: 0.01 } }) };
+  }
+  const c = charts[id];
+  c.chart.applyOptions({ layout: { background: { color: "transparent" }, textColor: css("--muted"), fontFamily: css("--body") },
+    grid: { vertLines: { visible: false }, horzLines: { color: css("--line") } } });
+  c.series.applyOptions({ color });
+  const seen = new Set(), clean = [];
+  for (const p of data) { if (p.value == null || seen.has(p.time)) continue; seen.add(p.time); clean.push(p); }
+  clean.sort((a, b) => (a.time > b.time ? 1 : -1));
+  const key = clean.length + ":" + clean[clean.length - 1].time + ":" + clean[clean.length - 1].value;
+  if (c.key !== key) { c.series.setData(clean); c.chart.timeScale().fitContent(); c.key = key; }
+}
+function drawTab() {
+  for (const t of ["strip", "price", "crack", "balance"]) $("pane-" + t).hidden = t !== tab;
+  document.querySelectorAll(".tab").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.tab === tab)));
+  if (!S) return;
+  const usd = (v) => "$" + v.toFixed(2);
+  if (tab === "strip") strip();
+  if (tab === "price") lineChart("price", S.price_series, css("--series-1"), usd);
+  if (tab === "crack") lineChart("crack", S.crack_series, css("--series-1"), usd);
+  if (tab === "balance") lineChart("balance", (S.balance_history || []).map((r) => ({ time: Math.floor(Date.parse(r.ts) / 1000), value: Number(r.balance) })).filter((p) => p.time && p.value > 2500), css("--series-1"), usd);
+}
+
+/* ---------- quotes and fills ---------- */
+function blotter() {
+  const rows = [];
+  for (const q of S.resting || []) rows.push({ k: "Resting on demo", t: 9e12, tk: q.ticker, side: q.side, px: q.price, fair: q.fair, n: q.count, tone: "idle" });
+  if (!(S.resting || []).length) for (const q of S.maker_quotes || []) rows.push({ k: "Quote the model wants", t: 8e12, tk: q.ticker, side: q.side, px: q.price, fair: q.fair, n: "", tone: "idle" });
+  for (const f of S.shadow_fills || []) rows.push({ k: "Shadow fill", t: isoSec(f.ts), tk: f.ticker, side: f.side, px: f.price, fair: f.model_p, n: "", when: f.ts, tone: "good" });
+  for (const o of S.orders || []) rows.push({ k: o.tier === "maker" ? "Demo quote sent" : "Demo order" + (o.tier === "probe" ? " (probe)" : ""), t: isoSec(o.ts), tk: o.ticker, side: o.side, px: o.price, fair: o.price + (o.edge || 0), n: o.count, when: o.ts, tone: "good" });
+  rows.sort((a, b) => b.t - a.t);
+  if (!rows.length) { $("blotter").innerHTML = '<p class="empty">Nothing yet. Quotes appear here when the model finds a price it would be happy to be filled at, and fills appear when the market trades down to one.</p>'; return; }
+  $("blotter").innerHTML = '<table><thead><tr><th>What</th><th>Market</th><th>Side</th><th class="r">Price</th><th class="r">Model</th><th class="r">When</th></tr></thead><tbody>'
+    + rows.slice(0, 40).map((r) => '<tr><td><span class="kind">' + ICONS[r.tone] + esc(r.k) + "</span></td><td>" + esc(market(r.tk)) + "</td><td>" + (r.n ? r.n + " " : "") + esc(r.side) + '</td><td class="r">' + cents(r.px) + '</td><td class="r">' + (r.fair ? (r.fair * 100).toFixed(1) + "¢" : "–") + '</td><td class="r">' + (r.when ? ago(isoSec(r.when)) : "now") + "</td></tr>").join("")
+    + "</tbody></table>";
+}
+
+/* ---------- equity desk ---------- */
+function equity() {
+  const e = S.equity, el = $("equity");
+  if (!e) { el.innerHTML = '<p class="empty">The stock ranking appears after the first cycle that runs the equity desk.</p>'; return; }
+  const p = e.pick || {}, top = (e.ranked || []).slice(0, 8), mx = Math.max(0.01, ...top.map((r) => Math.abs(r.score)));
+  let h = p.action === "long"
+    ? '<p class="pick">' + esc(p.ticker) + "<small>" + esc(p.name) + ", " + esc(p.bucket) + "</small></p><ul class=\"sw\"><li>+ " + esc(p.strengths) + "</li><li>− " + esc(p.weaknesses) + "</li></ul>"
+    : '<p class="pick">No pick</p><p class="empty">' + esc(p.reason || "") + "</p>";
+  h += '<p class="sub">How every name scores for this view</p>' + top.map((r) => {
+    const w = Math.abs(r.score) / mx * 50;
+    return '<div class="rank" title="' + esc(r.why || "") + '"><span class="t">' + esc(r.ticker) + '</span><span class="b">' + esc(r.bucket) + '</span><span class="sig" style="display:block;padding:0"><span class="track" style="display:block"><span class="bar ' + (r.score >= 0 ? "p" : "n") + '" style="width:' + w + '%"></span></span></span><span class="v">' + signed(r.score) + "</span></div>";
+  }).join("");
+  const n = e.news || {}, ms = (n.matches || []).slice(0, 5);
+  h += '<p class="sub">Headlines moving the news tilt (' + signed(n.tilt || 0) + ")</p>" + (ms.length
+    ? '<ul class="heads">' + ms.map((m) => "<li><span>" + (m.weight > 0 ? "▲" : "▼") + '<span class="sr">' + (m.weight > 0 ? " bullish" : " bearish") + "</span></span><span>" + esc(m.headline) + "</span></li>").join("") + "</ul>"
+    : '<p class="empty">No headline matched the lexicon in the last scan (' + (n.n_headlines || 0) + " read).</p>");
+  h += '<p class="chartnote">Paper picks, graded against the energy sector after five days. No stock orders are placed.</p>';
+  el.innerHTML = h;
+}
+
+function render() {
+  headline(); facts(); checks(); controls(); signals(); drawTab(); blotter(); equity();
+  $("log").textContent = (S.logs || []).join("\n") || "No activity logged yet.";
+  $("foot").textContent = (live ? "Live from this computer" : "Snapshot from the cloud bot") + ", updated " + ago(S.ts) + ".";
+}
+
+async function grab(url) { try { const r = await fetch(url, { cache: "no-store" }); if (r.ok) return await r.json(); } catch (e) {} return null; }
+const onThisComputer = ["127.0.0.1", "localhost", "[::1]"].includes(location.hostname);
+async function load() {
+  // served by the bot itself -> live API; anywhere else -> the published snapshot
+  let got = onThisComputer ? await grab("api/state") : null;
+  if (got) live = true;
+  else { got = await grab("state.json?" + Date.now()); if (got) live = false; }
+  if (got && !got.error) { S = got; lastGood = Date.now(); render(); }
+  else if (!S) { $("headline").textContent = "Can't reach the bot."; $("subline").textContent = "Start it with scripts\\10_dashboard.bat, or open the cloud dashboard link instead. This page retries on its own."; }
+  else if (Date.now() - lastGood > 60000) $("foot").textContent = "Lost contact with the bot " + ago(lastGood / 1000) + ". Showing the last state received.";
+  clearTimeout(load.h); load.h = setTimeout(load, live ? 10000 : 60000);
+}
+
+$("tabs").onclick = (e) => { const b = e.target.closest(".tab"); if (b) { tab = b.dataset.tab; drawTab(); } };
+addEventListener("resize", () => { if (S && tab === "strip") strip(); });
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { if (S) render(); });
+load();
+</script>
+</body>
+</html>

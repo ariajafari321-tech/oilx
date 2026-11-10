@@ -1,0 +1,133 @@
+# oilx configuration. Returns are decimals (0.01 = 1%), prices in dollars.
+
+[data]
+raw_dir = "data/raw"            # seed CSVs live here; `oilx fetch` refreshes them
+out_dir = "data/out"            # backtest outputs, reports
+
+[panel]
+start = "1990-01-01"            # panel start (signals warm up from here)
+backtest_start = "2007-01-03"   # first day positions are taken (all signals live)
+seasonal_years = 5              # years of history behind the inventory seasonal
+spot_glitch_abs = 0.12          # |spot move| above this while futures moved little -> treat as bad print
+spot_glitch_fut = 0.04          # ..."little" means |CL move| below this
+
+[lags]
+# Conservative availability lags so nothing is traded on data before its release.
+eia_release_bdays = 4           # week ends Friday; EIA releases Wednesday 10:30am ET (+1 safety)
+cot_release_bdays = 4           # COT as-of Tuesday; released Friday 3:30pm ET (+1 safety)
+
+[signals]
+# Which signals trade, and the tanh scale (z units) applied to each raw z-score.
+active = ["mom", "crack", "inv_level", "inv_surprise", "cot"]
+z_scale = 1.5                   # tanh(z / z_scale) keeps scores in [-1, 1]
+cot_dead_zone = 1.0             # COT crowding only acts beyond |z| > this (contrarian at extremes)
+# Gorton-Hayashi-Rouwenhorst upgrades (2026-10-22, theory-driven, not fitted):
+inv_glut_dampen = 0.5           # convenience yield is convex in shortage: a glut-side
+                                # inventory z counts at this fraction of a tight-side z
+mom_inv_conditioning = true     # trend trades 1.25x when the inventory state agrees
+                                # (tight+uptrend / glut+downtrend), 0.75x when it fights it
+
+[risk]
+vol_target = 0.10               # annualized vol target for the combined book
+vol_lookback_days = 20          # EWMA-ish realized vol window on the instrument
+max_leverage = 1.5              # |position| cap, in units of NAV
+kill_drawdown = 0.15            # trailing peak-to-valley NAV loss that flattens the book...
+kill_flat_days = 10             # ...for this many trading days; re-enter at half size
+kill_halflife_days = 10         # ...and scale back to full over this many days
+
+[costs]
+# Charged on |change in position| each day, plus a holding drag.
+spread_slippage_bps = 2.0       # round half-spread + slippage on CL front (micro futures)
+holding_bps_per_day = 0.5       # roll friction / financing approximation
+
+[walkforward]
+train_years = 5                 # trailing window used to set signal weights
+refit_months = 12               # refit cadence
+min_weight = 0.10               # every active signal keeps at least this weight (no sign flips)
+
+[eval]
+block_days = 10                 # circular block bootstrap block length
+n_boot = 500                    # bootstrap draws for the luck distribution
+
+# Equity desk (2026-10-28): a fixed universe of oil-exposed names (upstream / integrated
+# / midstream / refiners / services / ETFs) ranked each cycle off the SAME signal state
+# that drives the futures book, plus the news tilt. Output is a logged paper pick graded
+# against XLE - a recommendation engine, not an order router (no equity brokerage here).
+[equities]
+enabled = true
+horizon_days = 5                # picks younger than this aren't graded yet
+min_score = 0.10                # below this absolute score: "no trade - stay in cash/midstream"
+
+# News tilt (2026-10-28): crude headlines from Google News RSS (free, no key), scored by
+# a transparent keyword lexicon (in oilx/equities.py, printed with every match). There is
+# no free historical headline archive, so this CANNOT be backtested honestly - it is
+# live-only, logged from day one, and used ONLY as a tilt in the equity picker. It does
+# not touch the futures book or any Kalshi threshold until it has a graded history.
+[news]
+enabled = true
+max_headlines = 40
+lookback = "1d"                 # Google News when: window
+
+# Kalshi oil markets: fair-value scan (read-only on production) + demo-exchange trading.
+[kalshi]
+series = ["KXWTI", "KXWTIW", "KXWTIMONTHLY"]  # daily / weekly / monthly WTI strips
+# Second underlying (2026-10-28): Brent strips, priced off the BZ=F quote with OVX as the
+# vol PROXY (there is no free Brent vol index; WTI and Brent vols track closely but the
+# war premium can split them - so Brent gets a stiffer edge threshold below).
+brent_series = ["KXBRENTW", "KXBRENTMON"]
+brent_symbol = "BZ=F"
+brent_extra_edge = 0.02         # Brent signals need min_edge + this (vol-proxy penalty)
+scan_retries = 3                # per-cycle retries on network failure (campus Wi-Fi)
+scan_retry_wait_sec = 20
+min_edge = 0.05                 # model edge after fees to emit a signal (dollars/contract)
+suspect_edge = 0.25             # beyond this it's "too good", flagged, never traded (pmx rule)
+min_hours_to_close = 2.0        # skip the final hours: a flat-vol model is worst intraday
+max_days_to_close = 45          # beyond this, OVX's 30-day vol stops being the right number
+min_open_interest = 100         # skip dead markets
+taker_rate = 0.07               # Kalshi fee = ceil_cent(rate * C * P * (1-P))
+wing_z = 0.7                    # only trade/quote within this many settlement-horizon sd of
+                                # the forward. Measured on the live 2026-11-09 strip: model
+                                # matched market within ~1c inside 0.7 sd and was 2-4c too
+                                # cheap in BOTH wings (the vol smile a flat-vol model lacks).
+                                # Wing signals are still logged, flagged "wing", never traded.
+stale_sd_frac = 0.1             # max |quote - strip-implied forward|, in settlement-horizon
+                                # sd, before the whole strip is flagged and left alone.
+                                # Was 0.5 - far too loose: a forward that is wrong by x sd
+                                # shifts every at-the-money probability by ~0.4x, so 0.5 sd
+                                # allowed ~20c of fake "edge". Caught live 2026-11-09: the
+                                # Brent quote sat 0.39 sd ($2.11) above the strip's own
+                                # forward (a different contract month) and produced four
+                                # 10-13c "signals", all in the same direction. 0.1 sd caps
+                                # the damage near 4c, under the 5c threshold.
+
+[kalshi.demo]                   # demo exchange only; credentials live in secrets/ (gitignored)
+max_contracts_per_order = 10
+max_orders_per_run = 5
+max_open_contracts = 100
+
+# Probe tier (2026-10-28): edges of 3-5c are too thin to trade at size but worth BUYING
+# INFORMATION about - tiny orders, logged and scored separately, to measure empirically
+# whether sub-threshold edges are real. This is calibration spend, not conviction.
+[kalshi.demo.probe]
+enabled = true
+min_edge = 0.03                 # probe tier: [this, main min_edge) after fees
+max_contracts_per_order = 2
+max_orders_per_run = 3
+
+# Maker mode (2026-10-28): instead of only TAKING displayed prices, rest passive bids a
+# margin below model fair on liquid strips - the pmx trader study's core finding was that
+# makers earn roughly what takers lose. Orders are cancelled and reposted every cycle so
+# nothing stale ever rests. This is the main source of (good-priced) fills.
+[kalshi.demo.maker]
+enabled = true
+margin = 0.02                   # bid at model fair minus this (and never above ask - 1c)
+max_depth = 0.06                # may rest up to this far below the current best bid
+                                # (fix 2026-11-03: requiring join-the-bid in tight books
+                                # meant fair - margin < bid everywhere -> zero quotes)
+max_resting_orders = 6
+contracts_per_order = 5
+min_open_interest = 300         # only rest in markets with real activity
+                                # (was 500; a 2026-11-09 look at the live weekly strip
+                                # showed OI concentrated 100-1100 with only ~4 of 27
+                                # markets above 500 - the floor was excluding nearly
+                                # the whole book)

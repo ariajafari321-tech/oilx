@@ -1,0 +1,307 @@
+{
+"captured": "2026-11-10T00:10Z",
+"cl_front": 86.44,
+"ovx": 57.37,
+"markets": [
+{
+"ticker": "KXWTI-26NOV1014-T97.99",
+"strike_type": "greater",
+"floor_strike": 97.99,
+"yes_bid_dollars": "0.0000",
+"yes_ask_dollars": "0.0100",
+"open_interest_fp": "52.00",
+"close_time": "2026-11-10T19:30:00Z",
+"result": ""
+},
+{
+"ticker": "KXWTI-26NOV1014-T97.49",
+"strike_type": "greater",
+"floor_strike": 97.49,
+"yes_bid_dollars": "0.0000",
+"yes_ask_dollars": "0.0100",
+"open_interest_fp": "1.00",
+"close_time": "2026-11-10T19:30:00Z",
+"result": ""
+},
+{
+"ticker": "KXWTI-26NOV1014-T96.99",
+"strike_type": "greater",
+"floor_strike": 96.99,
+"yes_bid_dollars": "0.0000",
+"yes_ask_dollars": "0.0100",
+"open_interest_fp": "1.00",
+"close_time": "2026-11-10T19:30:00Z",
+"result": ""
+},
+{
+"ticker": "KXWTI-26NOV1014-T96.49",
+"strike_type": "greater",
+"floor_strike": 96.49,
+"yes_bid_dollars": "0.0000",
+"yes_ask_dollars": "0.0200",
+"open_interest_fp": "1.00",
+"close_time": "2026-11-10T19:30:00Z",
+"result": ""
+},
+{
+"ticker": "KXWTI-26NOV1014-T95.99",
+"strike_type": "greater",
+"floor_strike": 95.99,
+"yes_bid_dollars": "0.0000",
+"yes_ask_dollars": "0.0200",
+"open_interest_fp": "1.00",
+"close_time": "2026-11-10T19:30:00Z",
+"result": ""
+},
+{
+"ticker": "KXWTI-26NOV1014-T95.49",
+"strike_type": "greater",
+"floor_strike": 95.49,
+"yes_bid_dollars": "0.0000",
+"yes_ask_dollars": "0.0200",
+"open_interest_fp": "1.00",
+"close_time": "2026-11-10T19:30:00Z",
+"result": ""
+},
+{
+"ticker": "KXWTI-26NOV1014-T94.99",
+"strike_type": "greater",
+"floor_strike": 94.99,
+"yes_bid_dollars": "0.0000",
+"yes_ask_dollars": "0.0200",
+"open_interest_fp": "191.24",
+"close_time": "2026-11-10T19:30:00Z",
+"result": ""
+},
+{
+"ticker": "KXWTI-26NOV1014-T94.49",
+"strike_type": "greater",
+"floor_strike": 94.49,
+"yes_bid_dollars": "0.0000",
+"yes_ask_dollars": "0.0200",
+"open_interest_fp": "515.00",
+"close_time": "2026-11-10T19:30:00Z",
+"result": ""
+},
+{
+"ticker": "KXWTI-26NOV1014-T93.99",
+"strike_type": "greater",
+"floor_strike": 93.99,
+"yes_bid_dollars": "0.0000",
+"yes_ask_dollars": "0.0200",
+"open_interest_fp": "538.92",
+"close_time": "2026-11-10T19:30:00Z",
+"result": ""
+},
+{
+"ticker": "KXWTI-26NOV1014-T93.49",
+"strike_type": "greater",
+"floor_strike": 93.49,
+"yes_bid_dollars": "0.0000",
+"yes_ask_dollars": "0.0300",
+"open_interest_fp": "6544.00",
+"close_time": "2026-11-10T19:30:00Z",
+"result": ""
+},
+{
+"ticker": "KXWTI-26NOV1014-T92.99",
+"strike_type": "greater",
+"floor_strike": 92.99,
+"yes_bid_dollars": "0.0100",
+"yes_ask_dollars": "0.0300",
+"open_interest_fp": "146.00",
+"close_time": "2026-11-10T19:30:00Z",
+"result": ""
+},
+{
+"ticker": "KXWTI-26NOV1014-T92.49",
+"strike_type": "greater",
+"floor_strike": 92.49,
+"yes_bid_dollars": "0.0200",
+"yes_ask_dollars": "0.0400",
+"open_interest_fp": "2518.50",
+"close_time": "2026-11-10T19:30:00Z",
+"result": ""
+},
+{
+"ticker": "KXWTI-26NOV1014-T91.99",
+"strike_type": "greater",
+"floor_strike": 91.99,
+"yes_bid_dollars": "0.0300",
+"yes_ask_dollars": "0.0400",
+"open_interest_fp": "2606.16",
+"close_time": "2026-11-10T19:30:00Z",
+"result": ""
+},
+{
+"ticker": "KXWTI-26NOV1014-T91.49",
+"strike_type": "greater",
+"floor_strike": 91.49,
+"yes_bid_dollars": "0.0400",
+"yes_ask_dollars": "0.0500",
+"open_interest_fp": "4732.10",
+"close_time": "2026-11-10T19:30:00Z",
+"result": ""
+},
+{
+"ticker": "KXWTI-26NOV1014-T90.99",
+"strike_type": "greater",
+"floor_strike": 90.99,
+"yes_bid_dollars": "0.0500",
+"yes_ask_dollars": "0.0600",
+"open_interest_fp": "1598.07",
+"close_time": "2026-11-10T19:30:00Z",
+"result": ""
+},
+{
+"ticker": "KXWTI-26NOV1014-T90.49",
+"strike_type": "greater",
+"floor_strike": 90.49,
+"yes_bid_dollars": "0.0700",
+"yes_ask_dollars": "0.0800",
+"open_interest_fp": "1877.42",
+"close_time": "2026-11-10T19:30:00Z",
+"result": ""
+},
+{
+"ticker": "KXWTI-26NOV1014-T89.99",
+"strike_type": "greater",
+"floor_strike": 89.99,
+"yes_bid_dollars": "0.0900",
+"yes_ask_dollars": "0.1000",
+"open_interest_fp": "1620.07",
+"close_time": "2026-11-10T19:30:00Z",
+"result": ""
+},
+{
+"ticker": "KXWTI-26NOV1014-T89.49",
+"strike_type": "greater",
+"floor_strike": 89.49,
+"yes_bid_dollars": "0.1200",
+"yes_ask_dollars": "0.1300",
+"open_interest_fp": "2130.91",
+"close_time": "2026-11-10T19:30:00Z",
+"result": ""
+},
+{
+"ticker": "KXWTI-26NOV1014-T88.99",
+"strike_type": "greater",
+"floor_strike": 88.99,
+"yes_bid_dollars": "0.1600",
+"yes_ask_dollars": "0.1700",
+"open_interest_fp": "1048.72",
+"close_time": "2026-11-10T19:30:00Z",
+"result": ""
+},
+{
+"ticker": "KXWTI-26NOV1014-T88.49",
+"strike_type": "greater",
+"floor_strike": 88.49,
+"yes_bid_dollars": "0.2000",
+"yes_ask_dollars": "0.2100",
+"open_interest_fp": "1275.06",
+"close_time": "2026-11-10T19:30:00Z",
+"result": ""
+},
+{
+"ticker": "KXWTI-26NOV1014-T87.99",
+"strike_type": "greater",
+"floor_strike": 87.99,
+"yes_bid_dollars": "0.2500",
+"yes_ask_dollars": "0.2600",
+"open_interest_fp": "1628.26",
+"close_time": "2026-11-10T19:30:00Z",
+"result": ""
+},
+{
+"ticker": "KXWTI-26NOV1014-T87.49",
+"strike_type": "greater",
+"floor_strike": 87.49,
+"yes_bid_dollars": "0.3200",
+"yes_ask_dollars": "0.3400",
+"open_interest_fp": "844.05",
+"close_time": "2026-11-10T19:30:00Z",
+"result": ""
+},
+{
+"ticker": "KXWTI-26NOV1014-T86.99",
+"strike_type": "greater",
+"floor_strike": 86.99,
+"yes_bid_dollars": "0.4000",
+"yes_ask_dollars": "0.4100",
+"open_interest_fp": "1607.73",
+"close_time": "2026-11-10T19:30:00Z",
+"result": ""
+},
+{
+"ticker": "KXWTI-26NOV1014-T86.49",
+"strike_type": "greater",
+"floor_strike": 86.49,
+"yes_bid_dollars": "0.4900",
+"yes_ask_dollars": "0.5000",
+"open_interest_fp": "470.99",
+"close_time": "2026-11-10T19:30:00Z",
+"result": ""
+},
+{
+"ticker": "KXWTI-26NOV1014-T85.99",
+"strike_type": "greater",
+"floor_strike": 85.99,
+"yes_bid_dollars": "0.5700",
+"yes_ask_dollars": "0.5900",
+"open_interest_fp": "443.13",
+"close_time": "2026-11-10T19:30:00Z",
+"result": ""
+},
+{
+"ticker": "KXWTI-26NOV1014-T85.49",
+"strike_type": "greater",
+"floor_strike": 85.49,
+"yes_bid_dollars": "0.6500",
+"yes_ask_dollars": "0.6600",
+"open_interest_fp": "1959.53",
+"close_time": "2026-11-10T19:30:00Z",
+"result": ""
+},
+{
+"ticker": "KXWTI-26NOV1014-T84.99",
+"strike_type": "greater",
+"floor_strike": 84.99,
+"yes_bid_dollars": "0.7100",
+"yes_ask_dollars": "0.7200",
+"open_interest_fp": "694.65",
+"close_time": "2026-11-10T19:30:00Z",
+"result": ""
+},
+{
+"ticker": "KXWTI-26NOV1014-T84.49",
+"strike_type": "greater",
+"floor_strike": 84.49,
+"yes_bid_dollars": "0.7700",
+"yes_ask_dollars": "0.7800",
+"open_interest_fp": "1018.02",
+"close_time": "2026-11-10T19:30:00Z",
+"result": ""
+},
+{
+"ticker": "KXWTI-26NOV1014-T83.99",
+"strike_type": "greater",
+"floor_strike": 83.99,
+"yes_bid_dollars": "0.8200",
+"yes_ask_dollars": "0.8300",
+"open_interest_fp": "1441.00",
+"close_time": "2026-11-10T19:30:00Z",
+"result": ""
+},
+{
+"ticker": "KXWTI-26NOV1014-T83.49",
+"strike_type": "greater",
+"floor_strike": 83.49,
+"yes_bid_dollars": "0.8500",
+"yes_ask_dollars": "0.8600",
+"open_interest_fp": "2308.00",
+"close_time": "2026-11-10T19:30:00Z",
+"result": ""
+}
+]
+}

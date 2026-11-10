@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+data/out/
+.pytest_cache/
+secrets/*
+!secrets/README.md
+_state/
+# personal interview material stays on the laptop if the repo is ever made public
+notes/Interview Talking Points.md
+notes/oilx One-Pager.pdf

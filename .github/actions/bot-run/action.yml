@@ -1,0 +1,43 @@
+name: oilx bot run
+description: Restore bot state, run one mode of the bot, publish state + dashboard.
+inputs:
+  mode: { required: true, description: "cycle | burst | stop | resume | flatten" }
+  key-id: { required: true, description: "Kalshi DEMO API key id" }
+  private-key: { required: true, description: "Kalshi DEMO private key (PEM text)" }
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+        cache: pip
+        cache-dependency-path: requirements-bot.txt
+    - shell: bash
+      run: pip install -q -r requirements-bot.txt
+    - name: Restore bot state
+      shell: bash
+      run: |
+        if git ls-remote --exit-code --heads origin bot-state >/dev/null 2>&1; then
+          git fetch -q --depth 1 origin bot-state
+          git worktree add -q -B bot-state _state FETCH_HEAD
+        else
+          git worktree add -q --orphan -b bot-state _state
+        fi
+    - name: Run
+      shell: bash
+      env:
+        KALSHI_DEMO_KEY_ID: ${{ inputs.key-id }}
+        KALSHI_DEMO_PRIVATE_KEY: ${{ inputs.private-key }}
+        OILX_MODE: ${{ inputs.mode }}
+      run: bash scripts/cloud_cycle.sh "$OILX_MODE"
+    - name: Publish state and dashboard
+      shell: bash
+      run: |
+        cd _state
+        git config user.name "oilx-bot"
+        git config user.email "oilx-bot@users.noreply.github.com"
+        git add -A
+        # one rolling commit: the branch never accumulates history, so it never bloats
+        git commit -q --amend -m "state $(date -u +%FT%TZ)" 2>/dev/null \
+          || git commit -q -m "state $(date -u +%FT%TZ)"
+        git push -q --force origin bot-state

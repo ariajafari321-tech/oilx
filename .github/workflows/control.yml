@@ -1,0 +1,26 @@
+# The control panel for the hosted bot: Actions tab -> "oilx control" -> Run workflow.
+name: oilx control
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "stop = kill switch on + close everything | resume = kill switch off | flatten = close everything, keep trading"
+        type: choice
+        options: [stop, resume, flatten]
+        required: true
+permissions:
+  contents: write
+concurrency:
+  group: oilx-state
+  cancel-in-progress: false
+jobs:
+  control:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/bot-run
+        with:
+          mode: ${{ inputs.action }}
+          key-id: ${{ secrets.KALSHI_DEMO_KEY_ID }}
+          private-key: ${{ secrets.KALSHI_DEMO_PRIVATE_KEY }}
