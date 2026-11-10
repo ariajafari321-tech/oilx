@@ -1,0 +1,294 @@
+{
+ "view": {
+  "crude": 0.2727409689049376,
+  "crack": -0.12938948182206195,
+  "vol": 0.5236031390780577,
+  "tilt": 0.053,
+  "kill": false
+ },
+ "pick": {
+  "action": "long",
+  "ticker": "OXY",
+  "name": "Occidental",
+  "bucket": "upstream",
+  "score": 0.368,
+  "why": "crude view +0.27 x beta +1.30",
+  "strengths": "highest crude beta in the book (leverage + Permian scale)",
+  "weaknesses": "debt-heavy; the same leverage cuts twice as hard on the way down"
+ },
+ "avoid": {
+  "ticker": "VLO",
+  "score": -0.202,
+  "why": "crude view +0.27 x beta -0.20; crack view -0.13 x beta +1.10"
+ },
+ "ranked": [
+  {
+   "ticker": "OXY",
+   "name": "Occidental",
+   "bucket": "upstream",
+   "crude_beta": 1.3,
+   "crack_beta": 0.0,
+   "defensive": -0.2,
+   "strengths": "highest crude beta in the book (leverage + Permian scale)",
+   "weaknesses": "debt-heavy; the same leverage cuts twice as hard on the way down",
+   "score": 0.368,
+   "why": "crude view +0.27 x beta +1.30"
+  },
+  {
+   "ticker": "DVN",
+   "name": "Devon Energy",
+   "bucket": "upstream",
+   "crude_beta": 1.1,
+   "crack_beta": 0.0,
+   "defensive": 0.0,
+   "strengths": "variable-dividend model returns spikes to holders fast",
+   "weaknesses": "shorter reserve life; needs sustained prices to re-rate",
+   "score": 0.329,
+   "why": "crude view +0.27 x beta +1.10"
+  },
+  {
+   "ticker": "FANG",
+   "name": "Diamondback",
+   "bucket": "upstream",
+   "crude_beta": 1.1,
+   "crack_beta": 0.0,
+   "defensive": 0.0,
+   "strengths": "pure Permian, best-in-class cost per barrel",
+   "weaknesses": "single-basin concentration; serial-acquirer integration risk",
+   "score": 0.329,
+   "why": "crude view +0.27 x beta +1.10"
+  },
+  {
+   "ticker": "XOP",
+   "name": "SPDR Oil & Gas E&P ETF",
+   "bucket": "etf",
+   "crude_beta": 1.1,
+   "crack_beta": 0.1,
+   "defensive": 0.0,
+   "strengths": "equal-weight E&P basket: the crude view without single-name risk",
+   "weaknesses": "no alpha by construction - it IS the average",
+   "score": 0.316,
+   "why": "crude view +0.27 x beta +1.10"
+  },
+  {
+   "ticker": "EOG",
+   "name": "EOG Resources",
+   "bucket": "upstream",
+   "crude_beta": 1.0,
+   "crack_beta": 0.0,
+   "defensive": 0.0,
+   "strengths": "low-cost shale inventory, net cash, premium-drilling discipline",
+   "weaknesses": "pure price-taker: no downstream buffer when crude falls",
+   "score": 0.299,
+   "why": "crude view +0.27 x beta +1.00"
+  },
+  {
+   "ticker": "COP",
+   "name": "ConocoPhillips",
+   "bucket": "upstream",
+   "crude_beta": 0.9,
+   "crack_beta": 0.0,
+   "defensive": 0.1,
+   "strengths": "global E&P scale (absorbed Marathon Oil's assets in 2024)",
+   "weaknesses": "size dilutes the beta: moves less than the pure shale names",
+   "score": 0.28,
+   "why": "crude view +0.27 x beta +0.90"
+  },
+  {
+   "ticker": "USO",
+   "name": "United States Oil Fund",
+   "bucket": "etf",
+   "crude_beta": 1.0,
+   "crack_beta": 0.0,
+   "defensive": -0.3,
+   "strengths": "direct front-futures exposure in a cash account",
+   "weaknesses": "pays the roll in contango; never a buy-and-hold (see Instrument Menu)",
+   "score": 0.268,
+   "why": "crude view +0.27 x beta +1.00"
+  },
+  {
+   "ticker": "HAL",
+   "name": "Halliburton",
+   "bucket": "services",
+   "crude_beta": 0.8,
+   "crack_beta": 0.0,
+   "defensive": -0.1,
+   "strengths": "North America pressure pumping: fastest to feel a drilling pickup",
+   "weaknesses": "shale discipline era = producers no longer chase price with rigs",
+   "score": 0.229,
+   "why": "crude view +0.27 x beta +0.80"
+  },
+  {
+   "ticker": "SLB",
+   "name": "SLB (Schlumberger)",
+   "bucket": "services",
+   "crude_beta": 0.7,
+   "crack_beta": 0.0,
+   "defensive": -0.1,
+   "strengths": "international/offshore cycle leader; wins when producers re-invest",
+   "weaknesses": "lags price: producers must BELIEVE the price before they spend",
+   "score": 0.199,
+   "why": "crude view +0.27 x beta +0.70"
+  },
+  {
+   "ticker": "CVX",
+   "name": "Chevron",
+   "bucket": "integrated",
+   "crude_beta": 0.5,
+   "crack_beta": 0.2,
+   "defensive": 0.3,
+   "strengths": "fortress balance sheet, Permian + Hess growth",
+   "weaknesses": "same dilution: the index already owns it",
+   "score": 0.155,
+   "why": "crude view +0.27 x beta +0.50"
+  },
+  {
+   "ticker": "EPD",
+   "name": "Enterprise Products",
+   "bucket": "midstream",
+   "crude_beta": 0.15,
+   "crack_beta": 0.0,
+   "defensive": 1.0,
+   "strengths": "fee-based cash flows, 25+ years of distribution growth",
+   "weaknesses": "wrong instrument for a price view - that's the point",
+   "score": 0.148,
+   "why": "high-vol defensive bonus"
+  },
+  {
+   "ticker": "PAA",
+   "name": "Plains All American",
+   "bucket": "midstream",
+   "crude_beta": 0.25,
+   "crack_beta": 0.0,
+   "defensive": 0.7,
+   "strengths": "Permian crude gathering: volume growth when drilling runs hot",
+   "weaknesses": "more commodity-linked than it markets itself as",
+   "score": 0.147,
+   "why": "crude view +0.27 x beta +0.25; high-vol defensive bonus"
+  },
+  {
+   "ticker": "XOM",
+   "name": "ExxonMobil",
+   "bucket": "integrated",
+   "crude_beta": 0.5,
+   "crack_beta": 0.3,
+   "defensive": 0.3,
+   "strengths": "Guyana growth barrels + refining/chemicals buffer both directions",
+   "weaknesses": "too big to be a trade: expresses a view slowly",
+   "score": 0.142,
+   "why": "crude view +0.27 x beta +0.50"
+  },
+  {
+   "ticker": "ET",
+   "name": "Energy Transfer",
+   "bucket": "midstream",
+   "crude_beta": 0.2,
+   "crack_beta": 0.0,
+   "defensive": 0.6,
+   "strengths": "cheapest large midstream on distributable cash flow",
+   "weaknesses": "serial complexity + governance history = permanent discount risk",
+   "score": 0.122,
+   "why": "crude view +0.27 x beta +0.20; high-vol defensive bonus"
+  },
+  {
+   "ticker": "SHEL",
+   "name": "Shell",
+   "bucket": "integrated",
+   "crude_beta": 0.4,
+   "crack_beta": 0.2,
+   "defensive": 0.2,
+   "strengths": "world's biggest LNG trader; persistent valuation discount to US peers",
+   "weaknesses": "the discount persists for governance reasons - catalysts are slow",
+   "score": 0.114,
+   "why": "crude view +0.27 x beta +0.40"
+  },
+  {
+   "ticker": "PSX",
+   "name": "Phillips 66",
+   "bucket": "refiner",
+   "crude_beta": -0.1,
+   "crack_beta": 0.7,
+   "defensive": 0.2,
+   "strengths": "chemicals + midstream mix smooths refining cyclicality",
+   "weaknesses": "the mix means you only get ~70% of the crack view",
+   "score": -0.1,
+   "why": "crack view -0.13 x beta +0.70"
+  },
+  {
+   "ticker": "MPC",
+   "name": "Marathon Petroleum",
+   "bucket": "refiner",
+   "crude_beta": -0.2,
+   "crack_beta": 1.0,
+   "defensive": 0.0,
+   "strengths": "largest US refiner; prints money when cracks blow out (2026: $60+)",
+   "weaknesses": "crude is its INPUT - a supply-shock crude rally squeezes it",
+   "score": -0.189,
+   "why": "crude view +0.27 x beta -0.20; crack view -0.13 x beta +1.00"
+  },
+  {
+   "ticker": "VLO",
+   "name": "Valero",
+   "bucket": "refiner",
+   "crude_beta": -0.2,
+   "crack_beta": 1.1,
+   "defensive": 0.0,
+   "strengths": "Gulf Coast complexity: runs cheap heavy crude, exports products",
+   "weaknesses": "purest crack exposure cuts both ways when margins normalize",
+   "score": -0.202,
+   "why": "crude view +0.27 x beta -0.20; crack view -0.13 x beta +1.10"
+  }
+ ],
+ "ts": "2026-11-14T08:57:34+00:00",
+ "news": {
+  "tilt": 0.053,
+  "n_headlines": 40,
+  "matches": [
+   {
+    "headline": "Oil Prices Rose After US Forces Downed Iranian Drones",
+    "pattern": "attack|\\bstrikes?\\b|\\bstruck\\b|drone|missile",
+    "weight": 1
+   },
+   {
+    "headline": "Crude Oil Weekly Outlook: Houthi Attacks vs. a Double Top?",
+    "pattern": "attack|\\bstrikes?\\b|\\bstruck\\b|drone|missile",
+    "weight": 1
+   },
+   {
+    "headline": "Oil prices set for second straight weekly drop on signs of growing supply surplus",
+    "pattern": "(inventories|stockpiles|crude) (rose|build|surge)|surplus|glut|oversupply",
+    "weight": -0.8
+   },
+   {
+    "headline": "Oil Prices Rebound as Middle East Supply Risks Persist",
+    "pattern": "supply (cut|cuts|disruption|risk)",
+    "weight": 1
+   },
+   {
+    "headline": "Even with a durable ceasefire, these factors will support oil prices: BCA",
+    "pattern": "ceasefire|truce|peace (deal|talks progress)|de-?escalat",
+    "weight": -1
+   },
+   {
+    "headline": "Oil Prices Set for Second Weekly Decline Amid Growing Supply Surplus",
+    "pattern": "(inventories|stockpiles|crude) (rose|build|surge)|surplus|glut|oversupply",
+    "weight": -0.8
+   },
+   {
+    "headline": "Brent Crude Climbs Back Above $96 as Iran Tensions Escalate",
+    "pattern": "escalat",
+    "weight": 0.7
+   },
+   {
+    "headline": "Iraq's Oil Production Soars to 2019 High as Hormuz Flows Surge",
+    "pattern": "hormuz|red sea",
+    "weight": 1
+   }
+  ],
+  "note": "live-only signal: no free headline archive exists, so this is logged from day one instead of backtested"
+ },
+ "entry_quotes": {
+  "OXY": 58.75,
+  "XLE": 64.95999908447266
+ }
+}

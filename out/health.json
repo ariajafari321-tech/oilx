@@ -1,0 +1,81 @@
+{
+ "ok": true,
+ "schema_suspect": false,
+ "series": {
+  "KXWTI": {
+   "markets": 60,
+   "two_sided": 46,
+   "with_oi": 18,
+   "suspect_schema": false
+  },
+  "KXWTIW": {
+   "markets": 27,
+   "two_sided": 15,
+   "with_oi": 1,
+   "suspect_schema": false
+  },
+  "KXWTIMONTHLY": {
+   "markets": 0,
+   "two_sided": 0,
+   "with_oi": 0,
+   "suspect_schema": false
+  },
+  "KXBRENTW": {
+   "markets": 20,
+   "two_sided": 17,
+   "with_oi": 11,
+   "suspect_schema": false
+  },
+  "KXBRENTMON": {
+   "markets": 30,
+   "two_sided": 22,
+   "with_oi": 27,
+   "suspect_schema": false
+  }
+ },
+ "fwd": {
+  "WTI": 88.85842105263157,
+  "BRENT": 92.71222222222222
+ },
+ "sigma": 0.5027999877929688,
+ "sources": {
+  "sigma": "OVX live",
+  "WTI": "the market's own prices",
+  "BRENT": "the market's own prices"
+ },
+ "fwd_check": {
+  "WTI": {
+   "quote": 88.56,
+   "implied": 88.86,
+   "gap": -0.3,
+   "gap_pct": 0.34,
+   "limit_pct": 3.0
+  },
+  "BRENT": {
+   "quote": 95.84,
+   "implied": 92.71,
+   "gap": 3.13,
+   "gap_pct": 3.37,
+   "limit_pct": 3.0
+  }
+ },
+ "signals": {
+  "main": 2,
+  "probe": 2,
+  "flagged": 7
+ },
+ "maker": {
+  "staged": 6,
+  "rejects": {
+   "window": 0,
+   "stale_strip": 50,
+   "low_oi": 73,
+   "unparsable": 0,
+   "wing": 8,
+   "price_bounds": 0
+  },
+  "shadow_fills": 1
+ },
+ "ts": "2026-11-14T08:57:30+00:00",
+ "network_errors": []
+}

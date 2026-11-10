@@ -1,0 +1,332 @@
+
+=== 2026-11-10T03:45:45+00:00 ===
+FAILED before any order was placed:
+Traceback (most recent call last):
+  File "/home/runner/work/oilx/oilx/oilx/kalshi_demo.py", line 215, in trade_signals
+    return _log(_trade_signals(scan_path, secrets_dir, max_contracts=max_contracts,
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/oilx/oilx/oilx/kalshi_demo.py", line 232, in _trade_signals
+    client = DemoClient(secrets_dir)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/oilx/oilx/oilx/kalshi_demo.py", line 77, in __init__
+    raise FileNotFoundError(
+FileNotFoundError: demo credentials not found in /home/runner/work/oilx/oilx/secrets (or in the environment variables KALSHI_DEMO_KEY_ID / KALSHI_DEMO_PRIVATE_KEY). Create an API key on the demo exchange and save kalshi_demo_key_id.txt + kalshi_demo_private_key.pem there.
+
+
+=== 2026-11-10T04:44:46+00:00 ===
+FAILED before any order was placed:
+Traceback (most recent call last):
+  File "/home/runner/work/oilx/oilx/oilx/kalshi_demo.py", line 215, in trade_signals
+    return _log(_trade_signals(scan_path, secrets_dir, max_contracts=max_contracts,
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/oilx/oilx/oilx/kalshi_demo.py", line 232, in _trade_signals
+    client = DemoClient(secrets_dir)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/oilx/oilx/oilx/kalshi_demo.py", line 77, in __init__
+    raise FileNotFoundError(
+FileNotFoundError: demo credentials not found in /home/runner/work/oilx/oilx/secrets (or in the environment variables KALSHI_DEMO_KEY_ID / KALSHI_DEMO_PRIVATE_KEY). Create an API key on the demo exchange and save kalshi_demo_key_id.txt + kalshi_demo_private_key.pem there.
+
+
+=== 2026-11-10T04:52:21+00:00 ===
+demo balance $3,249.68; open contracts 0
+no taker orders placed (no clean signals above the edge thresholds)
+maker: refreshing resting quotes
+  cancelled KXWTIW-26NOV1314-B86.50 yes x5.00
+  cancelled KXWTIW-26NOV1314-B87.50 yes x5.00
+  cancelled KXWTI-26NOV1014-T84.49 yes x5.00
+  cancelled KXWTIW-26NOV1314-B88.50 yes x5.00
+  cancelled KXWTI-26NOV1014-T86.99 yes x5.00
+  cancelled KXWTI-26NOV1014-T85.49 yes x5.00
+  resting yes x5 KXWTI-26NOV1014-T85.49 @0.52 (fair 0.55)
+  resting yes x5 KXWTI-26NOV1014-T86.99 @0.24 (fair 0.26)
+  resting yes x5 KXWTIW-26NOV1314-B88.50 @0.04 (fair 0.07)
+  resting yes x5 KXWTIW-26NOV1314-B86.50 @0.05 (fair 0.08)
+  resting yes x5 KXWTI-26NOV1014-T84.49 @0.71 (fair 0.73)
+  resting yes x5 KXWTIW-26NOV1314-B87.50 @0.05 (fair 0.07)
+
+=== 2026-11-10T04:52:58+00:00 ===
+demo balance $3,249.68; open contracts 0
+no taker orders placed (no clean signals above the edge thresholds)
+maker: refreshing resting quotes
+  cancelled KXWTIW-26NOV1314-B87.50 yes x5.00
+  cancelled KXWTI-26NOV1014-T84.49 yes x5.00
+  cancelled KXWTIW-26NOV1314-B86.50 yes x5.00
+  cancelled KXWTIW-26NOV1314-B88.50 yes x5.00
+  cancelled KXWTI-26NOV1014-T86.99 yes x5.00
+  cancelled KXWTI-26NOV1014-T85.49 yes x5.00
+  resting yes x5 KXWTI-26NOV1014-T85.49 @0.52 (fair 0.55)
+  resting yes x5 KXWTI-26NOV1014-T86.99 @0.24 (fair 0.27)
+  resting yes x5 KXWTIW-26NOV1314-B88.50 @0.04 (fair 0.07)
+  resting yes x5 KXWTIW-26NOV1314-B86.50 @0.05 (fair 0.08)
+  resting yes x5 KXWTI-26NOV1014-T84.49 @0.71 (fair 0.73)
+  resting yes x5 KXWTIW-26NOV1314-B87.50 @0.05 (fair 0.07)
+
+=== 2026-11-10T05:10:30+00:00 ===
+demo balance $3,249.68; open contracts 0
+no taker orders placed (no clean signals above the edge thresholds)
+maker: refreshing resting quotes
+  cancelled KXWTIW-26NOV1314-B87.50 yes x5.00
+  cancelled KXWTI-26NOV1014-T84.49 yes x5.00
+  cancelled KXWTIW-26NOV1314-B86.50 yes x5.00
+  cancelled KXWTIW-26NOV1314-B88.50 yes x5.00
+  cancelled KXWTI-26NOV1014-T86.99 yes x5.00
+  cancelled KXWTI-26NOV1014-T85.49 yes x5.00
+  resting yes x5 KXWTI-26NOV1014-T85.49 @0.54 (fair 0.56)
+  resting yes x5 KXWTI-26NOV1014-T86.99 @0.25 (fair 0.28)
+  resting yes x5 KXWTIW-26NOV1314-B88.50 @0.04 (fair 0.07)
+  resting yes x5 KXWTI-26NOV1014-T84.49 @0.71 (fair 0.75)
+  resting yes x5 KXWTIW-26NOV1314-B86.50 @0.05 (fair 0.08)
+  resting yes x5 KXWTIW-26NOV1314-B87.50 @0.05 (fair 0.07)
+
+=== 2026-11-10T14:50:51+00:00 ===
+demo balance $3,249.68; open contracts 0
+no taker orders placed (no clean signals above the edge thresholds)
+maker: refreshing resting quotes
+  cancelled KXWTIW-26NOV1314-B87.50 yes x5.00
+  cancelled KXWTIW-26NOV1314-B86.50 yes x5.00
+  cancelled KXWTI-26NOV1014-T84.49 yes x5.00
+  cancelled KXWTIW-26NOV1314-B88.50 yes x5.00
+  cancelled KXWTI-26NOV1014-T86.99 yes x5.00
+  cancelled KXWTI-26NOV1014-T85.49 yes x5.00
+
+=== 2026-11-10T17:53:47+00:00 ===
+demo balance $3,249.68; open contracts 0
+order failed KXBRENTMON-26NOV3017-T85.99: POST /portfolio/events/orders -> 404: {"error":{"code":"not_found","message":"not found"}}
+order failed KXBRENTMON-26NOV3017-T83.99: POST /portfolio/events/orders -> 404: {"error":{"code":"not_found","message":"not found"}}
+order failed KXBRENTMON-26NOV3017-T87.99: POST /portfolio/events/orders -> 404: {"error":{"code":"not_found","message":"not found"}}
+no taker orders placed (no clean signals above the edge thresholds)
+maker: refreshing resting quotes
+  resting yes x5 KXBRENTMON-26NOV3017-T97.99 @0.18 (fair 0.22)
+  resting no x5 KXBRENTMON-26NOV3017-T91.99 @0.57 (fair 0.61)
+  resting yes x5 KXBRENTMON-26NOV3017-T95.99 @0.23 (fair 0.27)
+  resting yes x5 KXBRENTMON-26NOV3017-T93.99 @0.28 (fair 0.33)
+  resting yes x5 KXWTIW-26NOV1314-B89.50 @0.04 (fair 0.07)
+  resting yes x5 KXWTIW-26NOV1314-B88.50 @0.05 (fair 0.08)
+
+=== 2026-11-10T21:39:54+00:00 ===
+demo balance $3,249.68; open contracts 0
+order failed KXBRENTMON-26NOV3017-T85.99: POST /portfolio/events/orders -> 404: {"error":{"code":"not_found","message":"not found"}}
+no taker orders placed (no clean signals above the edge thresholds)
+maker: refreshing resting quotes
+  cancelled KXWTIW-26NOV1314-B88.50 yes x5.00
+  cancelled KXWTIW-26NOV1314-B89.50 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T93.99 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T95.99 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T91.99 no x5.00
+  cancelled KXBRENTMON-26NOV3017-T97.99 yes x5.00
+  resting yes x5 KXBRENTMON-26NOV3017-T97.99 @0.19 (fair 0.23)
+  resting no x5 KXBRENTMON-26NOV3017-T91.99 @0.56 (fair 0.60)
+  resting yes x5 KXBRENTMON-26NOV3017-T95.99 @0.24 (fair 0.28)
+  resting yes x5 KXBRENTMON-26NOV3017-T93.99 @0.29 (fair 0.34)
+  resting yes x5 KXWTIW-26NOV1314-B89.50 @0.04 (fair 0.07)
+  resting yes x5 KXBRENTW-26NOV1317-T88.99 @0.50 (fair 0.55)
+
+=== 2026-11-10T23:25:19+00:00 ===
+demo balance $3,249.68; open contracts 0
+order failed KXBRENTMON-26NOV3017-T83.99: POST /portfolio/events/orders -> 404: {"error":{"code":"not_found","message":"not found"}}
+no taker orders placed (no clean signals above the edge thresholds)
+maker: refreshing resting quotes
+  cancelled KXBRENTW-26NOV1317-T88.99 yes x5.00
+  cancelled KXWTIW-26NOV1314-B89.50 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T93.99 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T95.99 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T91.99 no x5.00
+  cancelled KXBRENTMON-26NOV3017-T97.99 yes x5.00
+  resting yes x5 KXBRENTMON-26NOV3017-T97.99 @0.18 (fair 0.23)
+  resting no x5 KXBRENTMON-26NOV3017-T91.99 @0.56 (fair 0.61)
+  resting yes x5 KXBRENTMON-26NOV3017-T95.99 @0.23 (fair 0.28)
+  resting yes x5 KXBRENTMON-26NOV3017-T93.99 @0.29 (fair 0.33)
+  resting yes x5 KXBRENTW-26NOV1317-T88.99 @0.48 (fair 0.53)
+  resting yes x5 KXWTIW-26NOV1314-B88.50 @0.05 (fair 0.08)
+
+=== 2026-11-11T09:22:21+00:00 ===
+demo balance $3,249.68; open contracts 0
+no taker orders placed (no clean signals above the edge thresholds)
+maker: refreshing resting quotes
+  cancelled KXWTIW-26NOV1314-B88.50 yes x5.00
+  cancelled KXBRENTW-26NOV1317-T88.99 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T93.99 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T95.99 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T91.99 no x5.00
+  cancelled KXBRENTMON-26NOV3017-T97.99 yes x5.00
+  resting yes x5 KXBRENTMON-26NOV3017-T97.99 @0.18 (fair 0.23)
+  resting yes x5 KXBRENTMON-26NOV3017-T91.99 @0.37 (fair 0.41)
+  resting yes x5 KXBRENTMON-26NOV3017-T95.99 @0.24 (fair 0.28)
+  resting yes x5 KXWTI-26NOV1214-T86.99 @0.42 (fair 0.45)
+  resting yes x5 KXWTI-26NOV1214-T87.49 @0.36 (fair 0.38)
+  resting yes x5 KXBRENTW-26NOV1317-T90.99 @0.36 (fair 0.41)
+
+=== 2026-11-11T17:55:09+00:00 ===
+demo balance $3,249.68; open contracts 0
+placed [main] yes x10 KXWTI-26NOV1214-T88.99 @0.17 (edge +0.06) -> canceled (nothing to trade against)
+placed [probe] yes x2 KXWTI-26NOV1214-T88.49 @0.24 (edge +0.05) -> canceled (nothing to trade against)
+maker: refreshing resting quotes
+  cancelled KXBRENTW-26NOV1317-T90.99 yes x5.00
+  cancelled KXWTI-26NOV1214-T87.49 yes x5.00
+  cancelled KXWTI-26NOV1214-T86.99 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T95.99 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T91.99 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T97.99 yes x5.00
+  resting yes x5 KXBRENTMON-26NOV3017-T97.99 @0.20 (fair 0.24)
+  resting yes x5 KXWTI-26NOV1214-T87.49 @0.43 (fair 0.46)
+  resting yes x5 KXWTI-26NOV1214-T86.99 @0.51 (fair 0.54)
+  resting yes x5 KXBRENTMON-26NOV3017-T91.99 @0.39 (fair 0.43)
+  resting yes x5 KXBRENTMON-26NOV3017-T95.99 @0.26 (fair 0.30)
+  resting yes x5 KXBRENTW-26NOV1317-T90.99 @0.42 (fair 0.47)
+
+=== 2026-11-12T00:46:21+00:00 ===
+demo balance $3,249.68; open contracts 0
+no taker orders placed (no clean signals above the edge thresholds)
+maker: refreshing resting quotes
+  cancel FAILED KXBRENTW-26NOV1317-T90.99: DELETE /portfolio/events/orders/01a1cbbf-d448-7f2c-8398-e63a4ab3757f -> 503: {"error":{"code":"service_unavailable","message":"service_unavailable"}}
+  cancel FAILED KXBRENTMON-26NOV3017-T95.99: DELETE /portfolio/events/orders/01a1cbbf-d060-72fb-8220-0fb7ae5c89e0 -> 503: {"error":{"code":"service_unavailable","message":"service_unavailable"}}
+  cancel FAILED KXBRENTMON-26NOV3017-T91.99: DELETE /portfolio/events/orders/01a1cbbf-d060-7bc4-883a-65538ee9d851 -> 503: {"error":{"code":"service_unavailable","message":"service_unavailable"}}
+  cancel FAILED KXWTI-26NOV1214-T86.99: DELETE /portfolio/events/orders/01a1cbbf-cc78-7d7b-b5d5-938ee229cec8 -> 503: {"error":{"code":"service_unavailable","message":"service_unavailable"}}
+  cancel FAILED KXWTI-26NOV1214-T87.49: DELETE /portfolio/events/orders/01a1cbbf-cc78-7b56-a6d7-8277e9e9d6f1 -> 503: {"error":{"code":"service_unavailable","message":"service_unavailable"}}
+  cancel FAILED KXBRENTMON-26NOV3017-T97.99: DELETE /portfolio/events/orders/01a1cbbf-c890-718e-90e1-7cfdf1a334fb -> 503: {"error":{"code":"service_unavailable","message":"service_unavailable"}}
+  quote FAILED KXWTI-26NOV1214-T87.49: POST /portfolio/events/orders -> 503: {"error":{"code":"service_unavailable","message":"service_unavailable"}}
+  quote FAILED KXBRENTMON-26NOV3017-T97.99: POST /portfolio/events/orders -> 503: {"error":{"code":"service_unavailable","message":"service_unavailable"}}
+  quote FAILED KXWTI-26NOV1214-T86.49: POST /portfolio/events/orders -> 503: {"error":{"code":"service_unavailable","message":"service_unavailable"}}
+  quote FAILED KXWTI-26NOV1214-T86.99: POST /portfolio/events/orders -> 503: {"error":{"code":"service_unavailable","message":"service_unavailable"}}
+  quote FAILED KXBRENTMON-26NOV3017-T91.99: POST /portfolio/events/orders -> 503: {"error":{"code":"service_unavailable","message":"service_unavailable"}}
+  quote FAILED KXBRENTMON-26NOV3017-T95.99: POST /portfolio/events/orders -> 503: {"error":{"code":"service_unavailable","message":"service_unavailable"}}
+
+=== 2026-11-12T05:30:36+00:00 ===
+demo balance $3,249.68; open contracts 0
+no taker orders placed (no clean signals above the edge thresholds)
+maker: refreshing resting quotes
+  cancelled KXBRENTW-26NOV1317-T90.99 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T95.99 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T91.99 yes x5.00
+  cancelled KXWTI-26NOV1214-T86.99 yes x5.00
+  cancelled KXWTI-26NOV1214-T87.49 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T97.99 yes x5.00
+  resting yes x5 KXWTI-26NOV1214-T86.49 @0.32 (fair 0.35)
+  resting yes x5 KXBRENTMON-26NOV3017-T97.99 @0.18 (fair 0.22)
+  resting yes x5 KXWTI-26NOV1214-T86.99 @0.20 (fair 0.25)
+  resting yes x5 KXBRENTMON-26NOV3017-T91.99 @0.37 (fair 0.42)
+  resting yes x5 KXWTI-26NOV1214-T85.99 @0.43 (fair 0.45)
+  resting yes x5 KXBRENTMON-26NOV3017-T95.99 @0.24 (fair 0.28)
+
+=== 2026-11-12T09:49:16+00:00 ===
+demo balance $3,249.68; open contracts 0
+no taker orders placed (no clean signals above the edge thresholds)
+maker: refreshing resting quotes
+  cancelled KXBRENTMON-26NOV3017-T95.99 yes x5.00
+  cancelled KXWTI-26NOV1214-T85.99 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T91.99 yes x5.00
+  cancelled KXWTI-26NOV1214-T86.99 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T97.99 yes x5.00
+  cancelled KXWTI-26NOV1214-T86.49 yes x5.00
+  resting yes x5 KXWTI-26NOV1214-T86.49 @0.35 (fair 0.38)
+  resting yes x5 KXBRENTMON-26NOV3017-T97.99 @0.24 (fair 0.28)
+  resting yes x5 KXWTI-26NOV1214-T86.99 @0.23 (fair 0.26)
+  resting yes x5 KXWTI-26NOV1214-T85.99 @0.49 (fair 0.51)
+  resting yes x5 KXBRENTMON-26NOV3017-T99.99 @0.18 (fair 0.23)
+  resting yes x5 KXBRENTMON-26NOV3017-T91.99 @0.44 (fair 0.49)
+
+=== 2026-11-12T18:21:39+00:00 ===
+demo balance $3,244.33; open contracts 15
+no taker orders placed (no clean signals above the edge thresholds)
+maker: refreshing resting quotes
+  cancelled KXBRENTMON-26NOV3017-T91.99 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T99.99 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T97.99 yes x5.00
+  resting yes x5 KXBRENTMON-26NOV3017-T97.99 @0.27 (fair 0.31)
+  resting yes x5 KXBRENTMON-26NOV3017-T99.99 @0.21 (fair 0.25)
+  resting no x5 KXBRENTMON-26NOV3017-T91.99 @0.43 (fair 0.48)
+  resting yes x5 KXBRENTMON-26NOV3017-T95.99 @0.33 (fair 0.38)
+  resting yes x5 KXBRENTW-26NOV1317-T90.99 @0.70 (fair 0.74)
+  resting yes x5 KXBRENTMON-26NOV3017-T93.99 @0.40 (fair 0.45)
+
+=== 2026-11-13T00:28:38+00:00 ===
+demo balance $3,244.33; open contracts 15
+placed [probe] no x2 KXWTI-26NOV1314-T86.99 @0.20 (edge +0.05) -> canceled (nothing to trade against)
+placed [probe] no x2 KXWTI-26NOV1314-T87.49 @0.30 (edge +0.03) -> canceled (nothing to trade against)
+maker: refreshing resting quotes
+  cancelled KXBRENTMON-26NOV3017-T93.99 yes x5.00
+  cancelled KXBRENTW-26NOV1317-T90.99 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T95.99 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T91.99 no x5.00
+  cancelled KXBRENTMON-26NOV3017-T99.99 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T97.99 yes x5.00
+  resting yes x5 KXBRENTMON-26NOV3017-T97.99 @0.29 (fair 0.33)
+  resting no x5 KXBRENTMON-26NOV3017-T99.99 @0.69 (fair 0.73)
+  resting yes x5 KXWTI-26NOV1314-T88.49 @0.44 (fair 0.46)
+  resting no x5 KXBRENTMON-26NOV3017-T95.99 @0.56 (fair 0.60)
+  resting no x5 KXBRENTMON-26NOV3017-T91.99 @0.40 (fair 0.45)
+  resting yes x5 KXBRENTW-26NOV1317-T94.99 @0.25 (fair 0.30)
+
+=== 2026-11-13T09:29:42+00:00 ===
+demo balance $3,259.33; open contracts 0
+placed [main] no x10 KXWTI-26NOV1314-T89.49 @0.66 (edge +0.06) -> canceled (nothing to trade against)
+maker: refreshing resting quotes
+  cancelled KXBRENTW-26NOV1317-T94.99 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T91.99 no x5.00
+  cancelled KXBRENTMON-26NOV3017-T95.99 no x5.00
+  cancelled KXWTI-26NOV1314-T88.49 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T99.99 no x5.00
+  cancelled KXBRENTMON-26NOV3017-T97.99 yes x5.00
+  resting yes x5 KXBRENTMON-26NOV3017-T97.99 @0.28 (fair 0.33)
+  resting yes x5 KXWTI-26NOV1314-T88.49 @0.48 (fair 0.50)
+  resting no x5 KXBRENTMON-26NOV3017-T99.99 @0.69 (fair 0.73)
+  resting no x5 KXBRENTMON-26NOV3017-T95.99 @0.56 (fair 0.60)
+  resting no x5 KXBRENTMON-26NOV3017-T91.99 @0.40 (fair 0.45)
+  resting yes x5 KXWTIW-26NOV1314-B88.50 @0.23 (fair 0.25)
+
+=== 2026-11-13T17:46:06+00:00 ===
+demo balance $3,259.33; open contracts 0
+no taker orders placed (no clean signals above the edge thresholds)
+maker: refreshing resting quotes
+  cancelled KXWTIW-26NOV1314-B88.50 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T91.99 no x5.00
+  cancelled KXBRENTMON-26NOV3017-T95.99 no x5.00
+  cancelled KXBRENTMON-26NOV3017-T99.99 no x5.00
+  cancelled KXWTI-26NOV1314-T88.49 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T97.99 yes x5.00
+  resting yes x5 KXBRENTMON-26NOV3017-T97.99 @0.28 (fair 0.32)
+  resting yes x5 KXBRENTMON-26NOV3017-T99.99 @0.21 (fair 0.26)
+  resting yes x5 KXBRENTMON-26NOV3017-T95.99 @0.35 (fair 0.39)
+  resting no x5 KXBRENTMON-26NOV3017-T91.99 @0.40 (fair 0.45)
+  resting yes x5 KXBRENTMON-26NOV3017-T93.99 @0.42 (fair 0.47)
+  resting yes x5 KXBRENTW-26NOV1317-T92.99 @0.52 (fair 0.57)
+
+=== 2026-11-13T23:36:25+00:00 ===
+demo balance $3,259.33; open contracts 0
+placed [main] yes x10 KXWTI-26NOV1614-T91.49 @0.15 (edge +0.08) -> canceled (nothing to trade against)
+placed [main] yes x10 KXWTI-26NOV1614-T90.49 @0.25 (edge +0.05) -> canceled (nothing to trade against)
+maker: refreshing resting quotes
+  cancelled KXBRENTMON-26NOV3017-T93.99 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T91.99 no x5.00
+  cancelled KXBRENTMON-26NOV3017-T95.99 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T99.99 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T97.99 yes x5.00
+  resting yes x5 KXWTI-26NOV1614-T88.99 @0.44 (fair 0.46)
+  resting yes x5 KXWTI-26NOV1614-T88.49 @0.49 (fair 0.52)
+  resting yes x5 KXWTI-26NOV1614-T89.99 @0.31 (fair 0.37)
+
+=== 2026-11-14T06:20:26+00:00 ===
+demo balance $3,258.89; open contracts 1
+placed [probe] yes x2 KXWTI-26NOV1614-T90.99 @0.19 (edge +0.05) -> canceled (nothing to trade against)
+maker: refreshing resting quotes
+  cancelled KXWTI-26NOV1614-T89.99 yes x5.00
+  cancelled KXWTI-26NOV1614-T88.49 yes x5.00
+  cancelled KXWTI-26NOV1614-T88.99 yes x4.00
+  resting yes x5 KXWTI-26NOV1614-T89.99 @0.29 (fair 0.35)
+  resting yes x5 KXWTI-26NOV1614-T88.49 @0.48 (fair 0.50)
+  resting yes x5 KXWTI-26NOV1614-T90.49 @0.25 (fair 0.30)
+  resting no x5 KXWTI-26NOV1614-T87.99 @0.39 (fair 0.44)
+
+=== 2026-11-14T08:57:34+00:00 ===
+demo balance $3,258.89; open contracts 1
+placed [main] yes x10 KXWTI-26NOV1614-T90.99 @0.20 (edge +0.06) -> canceled (nothing to trade against)
+placed [main] no x10 KXWTI-26NOV1614-T87.99 @0.34 (edge +0.05) -> canceled (nothing to trade against)
+placed [probe] yes x2 KXWTI-26NOV1614-T90.49 @0.26 (edge +0.04) -> canceled (nothing to trade against)
+placed [probe] yes x2 KXWTI-26NOV1614-T89.99 @0.32 (edge +0.03) -> canceled (nothing to trade against)
+maker: refreshing resting quotes
+  cancelled KXWTI-26NOV1614-T87.99 no x5.00
+  cancelled KXWTI-26NOV1614-T90.49 yes x5.00
+  cancelled KXWTI-26NOV1614-T88.49 yes x5.00
+  cancelled KXWTI-26NOV1614-T89.99 yes x5.00
+  resting yes x5 KXWTI-26NOV1614-T89.49 @0.39 (fair 0.42)
+  resting yes x5 KXWTI-26NOV1614-T88.49 @0.51 (fair 0.53)

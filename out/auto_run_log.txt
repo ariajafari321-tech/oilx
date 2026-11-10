@@ -1,0 +1,1533 @@
+
+===== cloud cycle 2026-11-10T03:43:44Z =====
+$ oilx kalshi-scan
+WARNING oilx: OVX failed (Expecting value: line 1 column 1 (char 0)); retry 1/2 in 20s
+WARNING oilx: OVX failed (Expecting value: line 1 column 1 (char 0)); retry 2/2 in 20s
+WARNING oilx: CL=F failed (Expecting value: line 1 column 1 (char 0)); retry 1/2 in 20s
+WARNING oilx: CL=F failed (Expecting value: line 1 column 1 (char 0)); retry 2/2 in 20s
+WARNING oilx: WTI quote unavailable; using strip-implied forward 85.63
+WARNING oilx: BZ=F failed (Expecting value: line 1 column 1 (char 0)); retry 1/2 in 20s
+WARNING oilx: BZ=F failed (Expecting value: line 1 column 1 (char 0)); retry 2/2 in 20s
+WARNING oilx: BRENT quote unavailable; using strip-implied forward 89.32
+INFO oilx: curve logging skipped: fewer than two live contracts quoted
+{'WTI': {'KXWTI': 60, 'KXWTIW': 27, 'KXWTIMONTHLY': 0}, 'fwd': 85.63}
+{'BRENT': {'KXBRENTW': 20, 'KXBRENTMON': 30}, 'fwd': 89.32}
+maker: 6 passive quotes staged for the demo trader (rejected: low_oi 61, stale_strip 30, wing 36)
+kalshi oil scan  (fwd 85.63, sigma 49%)
+------------------------------------------------------------------------------
+-- 19 flagged (not tradable) --
+ KXBRENTMON-26NOV3017-T91.99  no edge +0.10  [stale_underlying]
+KXBRENTMON-26NOV3017-T119.99  no edge +0.10  [stale_underlying,wing]
+KXBRENTMON-26NOV3017-T115.99  no edge +0.09  [stale_underlying,wing]
+KXBRENTMON-26NOV3017-T113.99  no edge +0.08  [stale_underlying,wing]
+KXBRENTMON-26NOV3017-T125.99  no edge +0.08  [stale_underlying,wing]
+      KXWTI-26NOV1014-T87.99  no edge +0.08  [wing]
+KXBRENTMON-26NOV3017-T123.99  no edge +0.08  [stale_underlying,wing]
+KXBRENTMON-26NOV3017-T109.99  no edge +0.08  [stale_underlying,wing]
+KXBRENTMON-26NOV3017-T121.99  no edge +0.08  [stale_underlying,wing]
+      KXWTI-26NOV1014-T83.49 yes edge +0.06  [wing]
+$ oilx kalshi-demo
+FAILED before any order was placed:
+Traceback (most recent call last):
+  File "/home/runner/work/oilx/oilx/oilx/kalshi_demo.py", line 215, in trade_signals
+    return _log(_trade_signals(scan_path, secrets_dir, max_contracts=max_contracts,
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/oilx/oilx/oilx/kalshi_demo.py", line 232, in _trade_signals
+    client = DemoClient(secrets_dir)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/oilx/oilx/oilx/kalshi_demo.py", line 77, in __init__
+    raise FileNotFoundError(
+FileNotFoundError: demo credentials not found in /home/runner/work/oilx/oilx/secrets (or in the environment variables KALSHI_DEMO_KEY_ID / KALSHI_DEMO_PRIVATE_KEY). Create an API key on the demo exchange and save kalshi_demo_key_id.txt + kalshi_demo_private_key.pem there.
+
+$ oilx equity-pick
+INFO oilx.panel: flagged 2 suspect spot prints (|spot move|>12% while CL moved <4%)
+equity desk  (crude view +0.41, crack +0.51, vol 34%, news tilt -0.01)
+------------------------------------------------------------------------------
+PICK: long OXY (Occidental, upstream)  score +0.52
+  because: crude view +0.41 x beta +1.30
+  strengths:  highest crude beta in the book (leverage + Permian scale)
+  weaknesses: debt-heavy; the same leverage cuts twice as hard on the way down
+WEAKEST EXPRESSION: EPD (score +0.06; crude view +0.41 x beta +0.15) - not a short call, just the worst wrapper for this view
+
+ticker     bucket   score  name
+   OXY   upstream   +0.52  Occidental
+   XOP        etf   +0.49  SPDR Oil & Gas E&P ETF
+   VLO    refiner   +0.48  Valero
+   DVN   upstream   +0.44  Devon Energy
+  FANG   upstream   +0.44  Diamondback
+   MPC    refiner   +0.43  Marathon Petroleum
+   EOG   upstream   +0.40  EOG Resources
+   USO        etf   +0.40  United States Oil Fund
+   COP   upstream   +0.36  ConocoPhillips
+   XOM integrated   +0.35  ExxonMobil
+   HAL   services   +0.32  Halliburton
+   PSX    refiner   +0.32  Phillips 66
+   CVX integrated   +0.30  Chevron
+   SLB   services   +0.28  SLB (Schlumberger)
+  SHEL integrated   +0.26  Shell
+   PAA  midstream   +0.10  Plains All American
+    ET  midstream   +0.08  Energy Transfer
+   EPD  midstream   +0.06  Enterprise Products
+
+news (40 headlines, 6 matched):
+  - Oil Futures Slide as Trump Says New Strikes on Iran Unlikely
+  + Crude oil at lowest level since late August as Iran deal optimism outwei
+  + Oil falls as Trump downplays prospect of escalation with Iran
+  + Oil Prices Extend Gains on Escalating Middle East Hostilities
+  - Crude oil plunges as Trump says renewed Iran attacks unlikely (CL1:COM:C
+  - Oil prices hit 10-week low after Donald Trump says strikes on Iran ‘high
+INFO oilx.panel: flagged 2 suspect spot prints (|spot move|>12% while CL moved <4%)
+state exported: 43 KB
+
+===== cloud cycle 2026-11-10T04:44:44Z =====
+$ oilx kalshi-scan
+{'WTI': {'KXWTI': 60, 'KXWTIW': 27, 'KXWTIMONTHLY': 0}, 'fwd': 85.86}
+{'BRENT': {'KXBRENTW': 20, 'KXBRENTMON': 30}, 'fwd': 91.66}
+forward check: BRENT quote 91.66 vs strip-implied 89.32 (0.44 sd apart) - every BRENT market is flagged and left alone this cycle
+maker: 6 passive quotes staged for the demo trader (rejected: low_oi 52, stale_strip 50, wing 25)
+kalshi oil scan  (fwd 85.86, sigma 57%)
+------------------------------------------------------------------------------
+-- 7 flagged (not tradable) --
+   KXBRENTW-26NOV1317-T90.99 yes edge +0.14  [stale_underlying]
+   KXBRENTW-26NOV1317-T88.99 yes edge +0.14  [stale_underlying]
+   KXBRENTW-26NOV1317-T92.99 yes edge +0.13  [stale_underlying]
+   KXBRENTW-26NOV1317-T86.99 yes edge +0.09  [stale_underlying,wing]
+   KXBRENTW-26NOV1317-T94.99 yes edge +0.09  [stale_underlying]
+ KXBRENTMON-26NOV3017-T93.99 yes edge +0.06  [stale_underlying]
+      KXWTI-26NOV1014-T83.49 yes edge +0.04  [wing]
+$ oilx kalshi-demo
+FAILED before any order was placed:
+Traceback (most recent call last):
+  File "/home/runner/work/oilx/oilx/oilx/kalshi_demo.py", line 215, in trade_signals
+    return _log(_trade_signals(scan_path, secrets_dir, max_contracts=max_contracts,
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/oilx/oilx/oilx/kalshi_demo.py", line 232, in _trade_signals
+    client = DemoClient(secrets_dir)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/oilx/oilx/oilx/kalshi_demo.py", line 77, in __init__
+    raise FileNotFoundError(
+FileNotFoundError: demo credentials not found in /home/runner/work/oilx/oilx/secrets (or in the environment variables KALSHI_DEMO_KEY_ID / KALSHI_DEMO_PRIVATE_KEY). Create an API key on the demo exchange and save kalshi_demo_key_id.txt + kalshi_demo_private_key.pem there.
+
+$ oilx equity-pick
+INFO oilx.panel: flagged 2 suspect spot prints (|spot move|>12% while CL moved <4%)
+equity desk  (crude view +0.41, crack +0.51, vol 34%, news tilt +0.01)
+------------------------------------------------------------------------------
+PICK: long OXY (Occidental, upstream)  score +0.54
+  because: crude view +0.41 x beta +1.30
+  strengths:  highest crude beta in the book (leverage + Permian scale)
+  weaknesses: debt-heavy; the same leverage cuts twice as hard on the way down
+WEAKEST EXPRESSION: EPD (score +0.06; crude view +0.41 x beta +0.15) - not a short call, just the worst wrapper for this view
+
+ticker     bucket   score  name
+   OXY   upstream   +0.54  Occidental
+   XOP        etf   +0.51  SPDR Oil & Gas E&P ETF
+   VLO    refiner   +0.48  Valero
+   DVN   upstream   +0.45  Devon Energy
+  FANG   upstream   +0.45  Diamondback
+   MPC    refiner   +0.43  Marathon Petroleum
+   EOG   upstream   +0.41  EOG Resources
+   USO        etf   +0.41  United States Oil Fund
+   COP   upstream   +0.37  ConocoPhillips
+   XOM integrated   +0.36  ExxonMobil
+   HAL   services   +0.33  Halliburton
+   PSX    refiner   +0.32  Phillips 66
+   CVX integrated   +0.31  Chevron
+   SLB   services   +0.29  SLB (Schlumberger)
+  SHEL integrated   +0.27  Shell
+   PAA  midstream   +0.10  Plains All American
+    ET  midstream   +0.08  Energy Transfer
+   EPD  midstream   +0.06  Enterprise Products
+
+news (40 headlines, 5 matched):
+  + Oil can hit $150 if conflict escalates, but a price collapse is more lik
+  + Crude oil at lowest level since late August as Iran deal optimism outwei
+  - Oil Futures Slide as Trump Says New Strikes on Iran Unlikely
+  + Oil falls as Trump downplays prospect of escalation with Iran
+  - Crude oil plunges as Trump says renewed Iran attacks unlikely (CL1:COM:C
+INFO oilx.panel: flagged 2 suspect spot prints (|spot move|>12% while CL moved <4%)
+state exported: 39 KB
+
+===== cloud cycle 2026-11-10T04:52:14Z =====
+$ oilx kalshi-scan
+{'WTI': {'KXWTI': 60, 'KXWTIW': 27, 'KXWTIMONTHLY': 0}, 'fwd': 85.74}
+{'BRENT': {'KXBRENTW': 20, 'KXBRENTMON': 30}, 'fwd': 91.53}
+forward check: BRENT quote 91.53 vs strip-implied 89.32 (0.42 sd apart) - every BRENT market is flagged and left alone this cycle
+maker: 6 passive quotes staged for the demo trader (rejected: low_oi 52, stale_strip 50, wing 25)
+kalshi oil scan  (fwd 85.74, sigma 57%)
+------------------------------------------------------------------------------
+-- 6 flagged (not tradable) --
+   KXBRENTW-26NOV1317-T90.99 yes edge +0.13  [stale_underlying]
+   KXBRENTW-26NOV1317-T88.99 yes edge +0.13  [stale_underlying]
+   KXBRENTW-26NOV1317-T92.99 yes edge +0.12  [stale_underlying]
+   KXBRENTW-26NOV1317-T86.99 yes edge +0.09  [stale_underlying,wing]
+   KXBRENTW-26NOV1317-T94.99 yes edge +0.09  [stale_underlying]
+      KXWTI-26NOV1014-T87.99  no edge +0.04  [wing]
+$ oilx kalshi-demo
+demo balance $3,249.68; open contracts 0
+no taker orders placed (no clean signals above the edge thresholds)
+maker: refreshing resting quotes
+  cancelled KXWTIW-26NOV1314-B86.50 yes x5.00
+  cancelled KXWTIW-26NOV1314-B87.50 yes x5.00
+  cancelled KXWTI-26NOV1014-T84.49 yes x5.00
+  cancelled KXWTIW-26NOV1314-B88.50 yes x5.00
+  cancelled KXWTI-26NOV1014-T86.99 yes x5.00
+  cancelled KXWTI-26NOV1014-T85.49 yes x5.00
+  resting yes x5 KXWTI-26NOV1014-T85.49 @0.52 (fair 0.55)
+  resting yes x5 KXWTI-26NOV1014-T86.99 @0.24 (fair 0.26)
+  resting yes x5 KXWTIW-26NOV1314-B88.50 @0.04 (fair 0.07)
+  resting yes x5 KXWTIW-26NOV1314-B86.50 @0.05 (fair 0.08)
+  resting yes x5 KXWTI-26NOV1014-T84.49 @0.71 (fair 0.73)
+  resting yes x5 KXWTIW-26NOV1314-B87.50 @0.05 (fair 0.07)
+$ oilx equity-pick
+INFO oilx.panel: flagged 2 suspect spot prints (|spot move|>12% while CL moved <4%)
+equity desk  (crude view +0.41, crack +0.51, vol 34%, news tilt +0.05)
+------------------------------------------------------------------------------
+PICK: long OXY (Occidental, upstream)  score +0.56
+  because: crude view +0.41 x beta +1.30
+  strengths:  highest crude beta in the book (leverage + Permian scale)
+  weaknesses: debt-heavy; the same leverage cuts twice as hard on the way down
+WEAKEST EXPRESSION: EPD (score +0.07; crude view +0.41 x beta +0.15) - not a short call, just the worst wrapper for this view
+
+ticker     bucket   score  name
+   OXY   upstream   +0.56  Occidental
+   XOP        etf   +0.53  SPDR Oil & Gas E&P ETF
+   VLO    refiner   +0.48  Valero
+   DVN   upstream   +0.48  Devon Energy
+  FANG   upstream   +0.48  Diamondback
+   EOG   upstream   +0.43  EOG Resources
+   USO        etf   +0.43  United States Oil Fund
+   MPC    refiner   +0.43  Marathon Petroleum
+   COP   upstream   +0.39  ConocoPhillips
+   XOM integrated   +0.37  ExxonMobil
+   HAL   services   +0.35  Halliburton
+   CVX integrated   +0.32  Chevron
+   PSX    refiner   +0.32  Phillips 66
+   SLB   services   +0.30  SLB (Schlumberger)
+  SHEL integrated   +0.28  Shell
+   PAA  midstream   +0.11  Plains All American
+    ET  midstream   +0.09  Energy Transfer
+   EPD  midstream   +0.07  Enterprise Products
+
+news (40 headlines, 7 matched):
+  - Oil Futures Slide as Trump Says New Strikes on Iran Unlikely
+  + Oil can hit $150 if conflict escalates, but a price collapse is more lik
+  + Crude oil at lowest level since late August as Iran deal optimism outwei
+  + Oil falls as Trump downplays prospect of escalation with Iran
+  + Oil Prices Extend Gains on Escalating Middle East Hostilities
+  - Crude oil plunges as Trump says renewed Iran attacks unlikely (CL1:COM:C
+INFO oilx.panel: flagged 2 suspect spot prints (|spot move|>12% while CL moved <4%)
+state exported: 41 KB
+
+===== cloud cycle 2026-11-10T04:52:49Z =====
+$ oilx kalshi-scan
+{'WTI': {'KXWTI': 60, 'KXWTIW': 27, 'KXWTIMONTHLY': 0}, 'fwd': 85.76}
+{'BRENT': {'KXBRENTW': 20, 'KXBRENTMON': 30}, 'fwd': 91.53}
+forward check: BRENT quote 91.53 vs strip-implied 89.32 (0.42 sd apart) - every BRENT market is flagged and left alone this cycle
+maker: 6 passive quotes staged for the demo trader (rejected: low_oi 52, stale_strip 50, wing 25)
+kalshi oil scan  (fwd 85.76, sigma 57%)
+------------------------------------------------------------------------------
+-- 7 flagged (not tradable) --
+   KXBRENTW-26NOV1317-T90.99 yes edge +0.13  [stale_underlying]
+   KXBRENTW-26NOV1317-T88.99 yes edge +0.13  [stale_underlying]
+   KXBRENTW-26NOV1317-T92.99 yes edge +0.12  [stale_underlying]
+   KXBRENTW-26NOV1317-T86.99 yes edge +0.09  [stale_underlying,wing]
+   KXBRENTW-26NOV1317-T94.99 yes edge +0.09  [stale_underlying]
+      KXWTI-26NOV1014-T87.99  no edge +0.04  [wing]
+      KXWTI-26NOV1014-T83.49 yes edge +0.03  [wing]
+$ oilx kalshi-demo
+demo balance $3,249.68; open contracts 0
+no taker orders placed (no clean signals above the edge thresholds)
+maker: refreshing resting quotes
+  cancelled KXWTIW-26NOV1314-B87.50 yes x5.00
+  cancelled KXWTI-26NOV1014-T84.49 yes x5.00
+  cancelled KXWTIW-26NOV1314-B86.50 yes x5.00
+  cancelled KXWTIW-26NOV1314-B88.50 yes x5.00
+  cancelled KXWTI-26NOV1014-T86.99 yes x5.00
+  cancelled KXWTI-26NOV1014-T85.49 yes x5.00
+  resting yes x5 KXWTI-26NOV1014-T85.49 @0.52 (fair 0.55)
+  resting yes x5 KXWTI-26NOV1014-T86.99 @0.24 (fair 0.27)
+  resting yes x5 KXWTIW-26NOV1314-B88.50 @0.04 (fair 0.07)
+  resting yes x5 KXWTIW-26NOV1314-B86.50 @0.05 (fair 0.08)
+  resting yes x5 KXWTI-26NOV1014-T84.49 @0.71 (fair 0.73)
+  resting yes x5 KXWTIW-26NOV1314-B87.50 @0.05 (fair 0.07)
+$ oilx equity-pick
+INFO oilx.panel: flagged 2 suspect spot prints (|spot move|>12% while CL moved <4%)
+equity desk  (crude view +0.41, crack +0.51, vol 34%, news tilt +0.05)
+------------------------------------------------------------------------------
+PICK: long OXY (Occidental, upstream)  score +0.56
+  because: crude view +0.41 x beta +1.30
+  strengths:  highest crude beta in the book (leverage + Permian scale)
+  weaknesses: debt-heavy; the same leverage cuts twice as hard on the way down
+WEAKEST EXPRESSION: EPD (score +0.07; crude view +0.41 x beta +0.15) - not a short call, just the worst wrapper for this view
+
+ticker     bucket   score  name
+   OXY   upstream   +0.56  Occidental
+   XOP        etf   +0.53  SPDR Oil & Gas E&P ETF
+   VLO    refiner   +0.48  Valero
+   DVN   upstream   +0.48  Devon Energy
+  FANG   upstream   +0.48  Diamondback
+   EOG   upstream   +0.43  EOG Resources
+   USO        etf   +0.43  United States Oil Fund
+   MPC    refiner   +0.43  Marathon Petroleum
+   COP   upstream   +0.39  ConocoPhillips
+   XOM integrated   +0.37  ExxonMobil
+   HAL   services   +0.35  Halliburton
+   CVX integrated   +0.32  Chevron
+   PSX    refiner   +0.32  Phillips 66
+   SLB   services   +0.30  SLB (Schlumberger)
+  SHEL integrated   +0.28  Shell
+   PAA  midstream   +0.11  Plains All American
+    ET  midstream   +0.09  Energy Transfer
+   EPD  midstream   +0.07  Enterprise Products
+
+news (40 headlines, 7 matched):
+  - Oil Futures Slide as Trump Says New Strikes on Iran Unlikely
+  + Oil can hit $150 if conflict escalates, but a price collapse is more lik
+  + Crude oil at lowest level since late August as Iran deal optimism outwei
+  + Oil falls as Trump downplays prospect of escalation with Iran
+  + Oil Prices Extend Gains on Escalating Middle East Hostilities
+  - Crude oil plunges as Trump says renewed Iran attacks unlikely (CL1:COM:C
+INFO oilx.panel: flagged 2 suspect spot prints (|spot move|>12% while CL moved <4%)
+state exported: 43 KB
+
+===== cloud cycle 2026-11-10T05:10:22Z =====
+$ oilx kalshi-scan
+{'WTI': {'KXWTI': 60, 'KXWTIW': 27, 'KXWTIMONTHLY': 0}, 'fwd': 85.83}
+{'BRENT': {'KXBRENTW': 20, 'KXBRENTMON': 30}, 'fwd': 91.61}
+forward check: BRENT quote 91.61 vs strip-implied 89.30 (0.44 sd apart) - every BRENT market is flagged and left alone this cycle
+maker: 6 passive quotes staged for the demo trader (rejected: low_oi 52, stale_strip 50, wing 25)
+kalshi oil scan  (fwd 85.83, sigma 57%)
+------------------------------------------------------------------------------
+-- 7 flagged (not tradable) --
+   KXBRENTW-26NOV1317-T90.99 yes edge +0.15  [stale_underlying]
+   KXBRENTW-26NOV1317-T92.99 yes edge +0.14  [stale_underlying]
+   KXBRENTW-26NOV1317-T88.99 yes edge +0.13  [stale_underlying]
+   KXBRENTW-26NOV1317-T86.99 yes edge +0.10  [stale_underlying,wing]
+   KXBRENTW-26NOV1317-T94.99 yes edge +0.10  [stale_underlying]
+      KXWTI-26NOV1014-T83.49 yes edge +0.04  [wing]
+      KXWTI-26NOV1014-T87.99  no edge +0.03  [wing]
+$ oilx kalshi-demo
+demo balance $3,249.68; open contracts 0
+no taker orders placed (no clean signals above the edge thresholds)
+maker: refreshing resting quotes
+  cancelled KXWTIW-26NOV1314-B87.50 yes x5.00
+  cancelled KXWTI-26NOV1014-T84.49 yes x5.00
+  cancelled KXWTIW-26NOV1314-B86.50 yes x5.00
+  cancelled KXWTIW-26NOV1314-B88.50 yes x5.00
+  cancelled KXWTI-26NOV1014-T86.99 yes x5.00
+  cancelled KXWTI-26NOV1014-T85.49 yes x5.00
+  resting yes x5 KXWTI-26NOV1014-T85.49 @0.54 (fair 0.56)
+  resting yes x5 KXWTI-26NOV1014-T86.99 @0.25 (fair 0.28)
+  resting yes x5 KXWTIW-26NOV1314-B88.50 @0.04 (fair 0.07)
+  resting yes x5 KXWTI-26NOV1014-T84.49 @0.71 (fair 0.75)
+  resting yes x5 KXWTIW-26NOV1314-B86.50 @0.05 (fair 0.08)
+  resting yes x5 KXWTIW-26NOV1314-B87.50 @0.05 (fair 0.07)
+$ oilx equity-pick
+INFO oilx.panel: flagged 2 suspect spot prints (|spot move|>12% while CL moved <4%)
+equity desk  (crude view +0.41, crack +0.51, vol 34%, news tilt +0.05)
+------------------------------------------------------------------------------
+PICK: long OXY (Occidental, upstream)  score +0.56
+  because: crude view +0.41 x beta +1.30
+  strengths:  highest crude beta in the book (leverage + Permian scale)
+  weaknesses: debt-heavy; the same leverage cuts twice as hard on the way down
+WEAKEST EXPRESSION: EPD (score +0.07; crude view +0.41 x beta +0.15) - not a short call, just the worst wrapper for this view
+
+ticker     bucket   score  name
+   OXY   upstream   +0.56  Occidental
+   XOP        etf   +0.53  SPDR Oil & Gas E&P ETF
+   VLO    refiner   +0.48  Valero
+   DVN   upstream   +0.48  Devon Energy
+  FANG   upstream   +0.48  Diamondback
+   EOG   upstream   +0.43  EOG Resources
+   USO        etf   +0.43  United States Oil Fund
+   MPC    refiner   +0.43  Marathon Petroleum
+   COP   upstream   +0.39  ConocoPhillips
+   XOM integrated   +0.37  ExxonMobil
+   HAL   services   +0.35  Halliburton
+   CVX integrated   +0.32  Chevron
+   PSX    refiner   +0.32  Phillips 66
+   SLB   services   +0.30  SLB (Schlumberger)
+  SHEL integrated   +0.28  Shell
+   PAA  midstream   +0.11  Plains All American
+    ET  midstream   +0.09  Energy Transfer
+   EPD  midstream   +0.07  Enterprise Products
+
+news (40 headlines, 5 matched):
+  + Oil can hit $150 if conflict escalates, but a price collapse is more lik
+  + Crude oil at lowest level since late August as Iran deal optimism outwei
+  - Oil Futures Slide as Trump Says New Strikes on Iran Unlikely
+  + Oil falls as Trump downplays prospect of escalation with Iran
+  + Oil Prices Fall as Trump Plays Down Risk of Escalation with Iran
+INFO oilx.panel: flagged 2 suspect spot prints (|spot move|>12% while CL moved <4%)
+state exported: 44 KB
+
+===== cloud cycle 2026-11-10T14:50:47Z =====
+$ oilx kalshi-scan
+{'WTI': {'KXWTI': 60, 'KXWTIW': 27, 'KXWTIMONTHLY': 0}, 'fwd': 84.76}
+{'BRENT': {'KXBRENTW': 20, 'KXBRENTMON': 30}, 'fwd': 89.69}
+forward check: WTI quote 84.76 vs strip-implied 85.36 (0.53 sd apart) - every WTI market is flagged and left alone this cycle
+forward check: BRENT quote 89.69 vs strip-implied 87.69 (0.41 sd apart) - every BRENT market is flagged and left alone this cycle
+shadow fill: yes KXWTI-26NOV1014-T85.49 @0.54 (fair at quote 0.56)
+shadow fill: yes KXWTI-26NOV1014-T86.99 @0.25 (fair at quote 0.28)
+maker: 0 passive quotes staged for the demo trader (rejected: stale_strip 137)
+kalshi oil scan  (fwd 84.76, sigma 57%)
+------------------------------------------------------------------------------
+-- 12 flagged (not tradable) --
+      KXWTI-26NOV1014-T85.49  no edge +0.17  [stale_underlying]
+      KXWTI-26NOV1014-T84.99  no edge +0.16  [stale_underlying]
+   KXBRENTW-26NOV1317-T88.99 yes edge +0.16  [stale_underlying]
+      KXWTI-26NOV1014-T85.99  no edge +0.15  [stale_underlying,wing]
+   KXBRENTW-26NOV1317-T90.99 yes edge +0.14  [stale_underlying]
+      KXWTI-26NOV1014-T84.49  no edge +0.13  [stale_underlying]
+      KXWTI-26NOV1014-T86.49  no edge +0.11  [stale_underlying,wing]
+   KXBRENTW-26NOV1317-T92.99 yes edge +0.09  [stale_underlying]
+   KXBRENTW-26NOV1317-T86.99 yes edge +0.09  [stale_underlying]
+      KXWTI-26NOV1014-T86.99  no edge +0.09  [stale_underlying,wing]
+$ oilx kalshi-demo
+demo balance $3,249.68; open contracts 0
+no taker orders placed (no clean signals above the edge thresholds)
+maker: refreshing resting quotes
+  cancelled KXWTIW-26NOV1314-B87.50 yes x5.00
+  cancelled KXWTIW-26NOV1314-B86.50 yes x5.00
+  cancelled KXWTI-26NOV1014-T84.49 yes x5.00
+  cancelled KXWTIW-26NOV1314-B88.50 yes x5.00
+  cancelled KXWTI-26NOV1014-T86.99 yes x5.00
+  cancelled KXWTI-26NOV1014-T85.49 yes x5.00
+$ oilx equity-pick
+INFO oilx.panel: flagged 2 suspect spot prints (|spot move|>12% while CL moved <4%)
+equity desk  (crude view +0.41, crack +0.51, vol 34%, news tilt -0.06)
+------------------------------------------------------------------------------
+PICK: long OXY (Occidental, upstream)  score +0.49
+  because: crude view +0.41 x beta +1.30
+  strengths:  highest crude beta in the book (leverage + Permian scale)
+  weaknesses: debt-heavy; the same leverage cuts twice as hard on the way down
+WEAKEST EXPRESSION: EPD (score +0.06; crude view +0.41 x beta +0.15) - not a short call, just the worst wrapper for this view
+
+ticker     bucket   score  name
+   OXY   upstream   +0.49  Occidental
+   VLO    refiner   +0.49  Valero
+   XOP        etf   +0.47  SPDR Oil & Gas E&P ETF
+   MPC    refiner   +0.44  Marathon Petroleum
+   DVN   upstream   +0.42  Devon Energy
+  FANG   upstream   +0.42  Diamondback
+   EOG   upstream   +0.38  EOG Resources
+   USO        etf   +0.38  United States Oil Fund
+   XOM integrated   +0.34  ExxonMobil
+   COP   upstream   +0.34  ConocoPhillips
+   PSX    refiner   +0.32  Phillips 66
+   HAL   services   +0.30  Halliburton
+   CVX integrated   +0.29  Chevron
+   SLB   services   +0.27  SLB (Schlumberger)
+  SHEL integrated   +0.25  Shell
+   PAA  midstream   +0.10  Plains All American
+    ET  midstream   +0.08  Energy Transfer
+   EPD  midstream   +0.06  Enterprise Products
+
+news (40 headlines, 6 matched):
+  - Oil prices continue to fall on hopes of US-Iran peace deal talks
+  + Brent crude falls below $90 for first time since August on Iran war de-e
+  - Oil falls as Trump downplays prospect of escalation with Iran
+  + Oil prices extend losses as fears of Middle East escalation ease
+  - Oil Futures Slide as Trump Says New Strikes on Iran Unlikely
+  - Crude oil at lowest level since late August as Iran deal optimism outwei
+INFO oilx.panel: flagged 2 suspect spot prints (|spot move|>12% while CL moved <4%)
+state exported: 45 KB
+
+===== cloud cycle 2026-11-10T17:53:43Z =====
+$ oilx kalshi-scan
+{'WTI': {'KXWTI': 60, 'KXWTIW': 27, 'KXWTIMONTHLY': 0}, 'fwd': 86.36}
+{'BRENT': {'KXBRENTW': 20, 'KXBRENTMON': 30}, 'fwd': 89.25}
+maker: 6 passive quotes staged for the demo trader (rejected: low_oi 56, window 30, wing 36)
+kalshi oil scan  (fwd 86.36, sigma 57%)
+------------------------------------------------------------------------------
+ KXBRENTMON-26NOV3017-T85.99  no @0.33+0.02 fee  model 0.42  edge +0.07    484.1h  oi 130 [probe]
+ KXBRENTMON-26NOV3017-T83.99  no @0.27+0.02 fee  model 0.35  edge +0.06    484.1h  oi 337 [probe]
+ KXBRENTMON-26NOV3017-T87.99  no @0.41+0.02 fee  model 0.48  edge +0.05    484.1h  oi 1,342 [probe]
+-- 3 flagged (not tradable) --
+ KXBRENTMON-26NOV3017-T79.99  no edge +0.07  [wing]
+ KXBRENTMON-26NOV3017-T77.99  no edge +0.06  [wing]
+   KXBRENTW-26NOV1317-T84.99  no edge +0.06  [wing]
+$ oilx kalshi-demo
+demo balance $3,249.68; open contracts 0
+order failed KXBRENTMON-26NOV3017-T85.99: POST /portfolio/events/orders -> 404: {"error":{"code":"not_found","message":"not found"}}
+order failed KXBRENTMON-26NOV3017-T83.99: POST /portfolio/events/orders -> 404: {"error":{"code":"not_found","message":"not found"}}
+order failed KXBRENTMON-26NOV3017-T87.99: POST /portfolio/events/orders -> 404: {"error":{"code":"not_found","message":"not found"}}
+no taker orders placed (no clean signals above the edge thresholds)
+maker: refreshing resting quotes
+  resting yes x5 KXBRENTMON-26NOV3017-T97.99 @0.18 (fair 0.22)
+  resting no x5 KXBRENTMON-26NOV3017-T91.99 @0.57 (fair 0.61)
+  resting yes x5 KXBRENTMON-26NOV3017-T95.99 @0.23 (fair 0.27)
+  resting yes x5 KXBRENTMON-26NOV3017-T93.99 @0.28 (fair 0.33)
+  resting yes x5 KXWTIW-26NOV1314-B89.50 @0.04 (fair 0.07)
+  resting yes x5 KXWTIW-26NOV1314-B88.50 @0.05 (fair 0.08)
+$ oilx equity-pick
+INFO oilx.panel: flagged 2 suspect spot prints (|spot move|>12% while CL moved <4%)
+equity desk  (crude view +0.41, crack +0.51, vol 34%, news tilt -0.03)
+------------------------------------------------------------------------------
+PICK: long OXY (Occidental, upstream)  score +0.51
+  because: crude view +0.41 x beta +1.30
+  strengths:  highest crude beta in the book (leverage + Permian scale)
+  weaknesses: debt-heavy; the same leverage cuts twice as hard on the way down
+WEAKEST EXPRESSION: EPD (score +0.06; crude view +0.41 x beta +0.15) - not a short call, just the worst wrapper for this view
+
+ticker     bucket   score  name
+   OXY   upstream   +0.51  Occidental
+   VLO    refiner   +0.49  Valero
+   XOP        etf   +0.49  SPDR Oil & Gas E&P ETF
+   DVN   upstream   +0.43  Devon Energy
+  FANG   upstream   +0.43  Diamondback
+   MPC    refiner   +0.43  Marathon Petroleum
+   EOG   upstream   +0.40  EOG Resources
+   USO        etf   +0.40  United States Oil Fund
+   COP   upstream   +0.36  ConocoPhillips
+   XOM integrated   +0.35  ExxonMobil
+   PSX    refiner   +0.32  Phillips 66
+   HAL   services   +0.32  Halliburton
+   CVX integrated   +0.30  Chevron
+   SLB   services   +0.28  SLB (Schlumberger)
+  SHEL integrated   +0.26  Shell
+   PAA  midstream   +0.10  Plains All American
+    ET  midstream   +0.08  Energy Transfer
+   EPD  midstream   +0.06  Enterprise Products
+
+news (40 headlines, 3 matched):
+  - Oil prices continue to fall on hopes of US-Iran peace deal talks
+  - Oil falls as Trump downplays prospect of escalation with Iran
+  + Brent crude dips below $90 for first time since August on Iran war de-es
+INFO oilx.panel: flagged 2 suspect spot prints (|spot move|>12% while CL moved <4%)
+state exported: 47 KB
+
+===== cloud cycle 2026-11-10T21:39:45Z =====
+$ oilx kalshi-scan
+{'WTI': {'KXWTI': 30, 'KXWTIW': 27, 'KXWTIMONTHLY': 0}, 'fwd': 86.46}
+{'BRENT': {'KXBRENTW': 20, 'KXBRENTMON': 30}, 'fwd': 89.66}
+shadow fill: no KXBRENTMON-26NOV3017-T91.99 @0.57 (fair at quote 0.61)
+maker: 6 passive quotes staged for the demo trader (rejected: low_oi 52, wing 39)
+kalshi oil scan  (fwd 86.46, sigma 57%)
+------------------------------------------------------------------------------
+ KXBRENTMON-26NOV3017-T85.99  no @0.33+0.02 fee  model 0.40  edge +0.05    480.3h  oi 130 [probe]
+-- 2 flagged (not tradable) --
+ KXBRENTMON-26NOV3017-T79.99  no edge +0.07  [wing]
+ KXBRENTMON-26NOV3017-T77.99  no edge +0.06  [wing]
+$ oilx kalshi-demo
+demo balance $3,249.68; open contracts 0
+order failed KXBRENTMON-26NOV3017-T85.99: POST /portfolio/events/orders -> 404: {"error":{"code":"not_found","message":"not found"}}
+no taker orders placed (no clean signals above the edge thresholds)
+maker: refreshing resting quotes
+  cancelled KXWTIW-26NOV1314-B88.50 yes x5.00
+  cancelled KXWTIW-26NOV1314-B89.50 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T93.99 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T95.99 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T91.99 no x5.00
+  cancelled KXBRENTMON-26NOV3017-T97.99 yes x5.00
+  resting yes x5 KXBRENTMON-26NOV3017-T97.99 @0.19 (fair 0.23)
+  resting no x5 KXBRENTMON-26NOV3017-T91.99 @0.56 (fair 0.60)
+  resting yes x5 KXBRENTMON-26NOV3017-T95.99 @0.24 (fair 0.28)
+  resting yes x5 KXBRENTMON-26NOV3017-T93.99 @0.29 (fair 0.34)
+  resting yes x5 KXWTIW-26NOV1314-B89.50 @0.04 (fair 0.07)
+  resting yes x5 KXBRENTW-26NOV1317-T88.99 @0.50 (fair 0.55)
+$ oilx equity-pick
+INFO oilx.panel: flagged 2 suspect spot prints (|spot move|>12% while CL moved <4%)
+equity desk  (crude view +0.41, crack +0.51, vol 34%, news tilt +0.00)
+------------------------------------------------------------------------------
+PICK: long OXY (Occidental, upstream)  score +0.53
+  because: crude view +0.41 x beta +1.30
+  strengths:  highest crude beta in the book (leverage + Permian scale)
+  weaknesses: debt-heavy; the same leverage cuts twice as hard on the way down
+WEAKEST EXPRESSION: EPD (score +0.06; crude view +0.41 x beta +0.15) - not a short call, just the worst wrapper for this view
+
+ticker     bucket   score  name
+   OXY   upstream   +0.53  Occidental
+   XOP        etf   +0.50  SPDR Oil & Gas E&P ETF
+   VLO    refiner   +0.48  Valero
+   DVN   upstream   +0.45  Devon Energy
+  FANG   upstream   +0.45  Diamondback
+   MPC    refiner   +0.43  Marathon Petroleum
+   EOG   upstream   +0.41  EOG Resources
+   USO        etf   +0.41  United States Oil Fund
+   COP   upstream   +0.37  ConocoPhillips
+   XOM integrated   +0.36  ExxonMobil
+   HAL   services   +0.33  Halliburton
+   PSX    refiner   +0.32  Phillips 66
+   CVX integrated   +0.31  Chevron
+   SLB   services   +0.29  SLB (Schlumberger)
+  SHEL integrated   +0.27  Shell
+   PAA  midstream   +0.10  Plains All American
+    ET  midstream   +0.08  Energy Transfer
+   EPD  midstream   +0.06  Enterprise Products
+
+news (40 headlines, 4 matched):
+  + Oil Prices Slide as Trump Signals Pause in Iran Strikes
+  - Oil prices continue to fall on hopes of US-Iran peace deal talks
+  - Oil prices ease to two-month lows as US downplays further Iran strikes -
+  + Oil Extends Drop as Trump Says Further Iran Strikes Unnecessary
+INFO oilx.panel: flagged 2 suspect spot prints (|spot move|>12% while CL moved <4%)
+state exported: 48 KB
+
+===== cloud cycle 2026-11-10T23:25:11Z =====
+$ oilx kalshi-scan
+{'WTI': {'KXWTI': 30, 'KXWTIW': 27, 'KXWTIMONTHLY': 0}, 'fwd': 86.15}
+{'BRENT': {'KXBRENTW': 20, 'KXBRENTMON': 30}, 'fwd': 89.44}
+maker: 6 passive quotes staged for the demo trader (rejected: low_oi 51, wing 41)
+kalshi oil scan  (fwd 86.15, sigma 57%)
+------------------------------------------------------------------------------
+ KXBRENTMON-26NOV3017-T83.99  no @0.27+0.02 fee  model 0.34  edge +0.05    478.6h  oi 337 [probe]
+-- 2 flagged (not tradable) --
+ KXBRENTMON-26NOV3017-T79.99  no edge +0.06  [wing]
+ KXBRENTMON-26NOV3017-T77.99  no edge +0.06  [wing]
+$ oilx kalshi-demo
+demo balance $3,249.68; open contracts 0
+order failed KXBRENTMON-26NOV3017-T83.99: POST /portfolio/events/orders -> 404: {"error":{"code":"not_found","message":"not found"}}
+no taker orders placed (no clean signals above the edge thresholds)
+maker: refreshing resting quotes
+  cancelled KXBRENTW-26NOV1317-T88.99 yes x5.00
+  cancelled KXWTIW-26NOV1314-B89.50 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T93.99 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T95.99 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T91.99 no x5.00
+  cancelled KXBRENTMON-26NOV3017-T97.99 yes x5.00
+  resting yes x5 KXBRENTMON-26NOV3017-T97.99 @0.18 (fair 0.23)
+  resting no x5 KXBRENTMON-26NOV3017-T91.99 @0.56 (fair 0.61)
+  resting yes x5 KXBRENTMON-26NOV3017-T95.99 @0.23 (fair 0.28)
+  resting yes x5 KXBRENTMON-26NOV3017-T93.99 @0.29 (fair 0.33)
+  resting yes x5 KXBRENTW-26NOV1317-T88.99 @0.48 (fair 0.53)
+  resting yes x5 KXWTIW-26NOV1314-B88.50 @0.05 (fair 0.08)
+$ oilx equity-pick
+INFO oilx.panel: flagged 2 suspect spot prints (|spot move|>12% while CL moved <4%)
+equity desk  (crude view +0.41, crack +0.51, vol 34%, news tilt +0.00)
+------------------------------------------------------------------------------
+PICK: long OXY (Occidental, upstream)  score +0.53
+  because: crude view +0.41 x beta +1.30
+  strengths:  highest crude beta in the book (leverage + Permian scale)
+  weaknesses: debt-heavy; the same leverage cuts twice as hard on the way down
+WEAKEST EXPRESSION: EPD (score +0.06; crude view +0.41 x beta +0.15) - not a short call, just the worst wrapper for this view
+
+ticker     bucket   score  name
+   OXY   upstream   +0.53  Occidental
+   XOP        etf   +0.50  SPDR Oil & Gas E&P ETF
+   VLO    refiner   +0.48  Valero
+   DVN   upstream   +0.45  Devon Energy
+  FANG   upstream   +0.45  Diamondback
+   MPC    refiner   +0.43  Marathon Petroleum
+   EOG   upstream   +0.41  EOG Resources
+   USO        etf   +0.41  United States Oil Fund
+   COP   upstream   +0.37  ConocoPhillips
+   XOM integrated   +0.36  ExxonMobil
+   HAL   services   +0.33  Halliburton
+   PSX    refiner   +0.32  Phillips 66
+   CVX integrated   +0.31  Chevron
+   SLB   services   +0.29  SLB (Schlumberger)
+  SHEL integrated   +0.27  Shell
+   PAA  midstream   +0.10  Plains All American
+    ET  midstream   +0.08  Energy Transfer
+   EPD  midstream   +0.06  Enterprise Products
+
+news (40 headlines, 4 matched):
+  - Oil prices ease to two-month lows as US downplays further Iran strikes
+  + Oil Extends Drop as Trump Says Further Iran Strikes Unnecessary
+  + Oil Prices Slide as Trump Signals Pause in Iran Strikes
+  - Oil prices continue to fall on hopes of US-Iran peace deal talks
+INFO oilx.panel: flagged 2 suspect spot prints (|spot move|>12% while CL moved <4%)
+state exported: 49 KB
+
+===== cloud cycle 2026-11-11T09:22:12Z =====
+$ oilx kalshi-scan
+{'WTI': {'KXWTI': 60, 'KXWTIW': 27, 'KXWTIMONTHLY': 0}, 'fwd': 86.67}
+{'BRENT': {'KXBRENTW': 20, 'KXBRENTMON': 30}, 'fwd': 90.16}
+maker: 6 passive quotes staged for the demo trader (rejected: low_oi 72, wing 44)
+kalshi oil scan  (fwd 86.67, sigma 53%)
+------------------------------------------------------------------------------
+no signals above the edge threshold - which is the usual, honest answer
+$ oilx kalshi-demo
+demo balance $3,249.68; open contracts 0
+no taker orders placed (no clean signals above the edge thresholds)
+maker: refreshing resting quotes
+  cancelled KXWTIW-26NOV1314-B88.50 yes x5.00
+  cancelled KXBRENTW-26NOV1317-T88.99 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T93.99 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T95.99 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T91.99 no x5.00
+  cancelled KXBRENTMON-26NOV3017-T97.99 yes x5.00
+  resting yes x5 KXBRENTMON-26NOV3017-T97.99 @0.18 (fair 0.23)
+  resting yes x5 KXBRENTMON-26NOV3017-T91.99 @0.37 (fair 0.41)
+  resting yes x5 KXBRENTMON-26NOV3017-T95.99 @0.24 (fair 0.28)
+  resting yes x5 KXWTI-26NOV1214-T86.99 @0.42 (fair 0.45)
+  resting yes x5 KXWTI-26NOV1214-T87.49 @0.36 (fair 0.38)
+  resting yes x5 KXBRENTW-26NOV1317-T90.99 @0.36 (fair 0.41)
+$ oilx equity-pick
+INFO oilx.panel: flagged 2 suspect spot prints (|spot move|>12% while CL moved <4%)
+equity desk  (crude view +0.42, crack -0.09, vol 59%, news tilt +0.03)
+------------------------------------------------------------------------------
+PICK: long OXY (Occidental, upstream)  score +0.53
+  because: crude view +0.42 x beta +1.30
+  strengths:  highest crude beta in the book (leverage + Permian scale)
+  weaknesses: debt-heavy; the same leverage cuts twice as hard on the way down
+WEAKEST EXPRESSION: VLO (score -0.18; crude view +0.42 x beta -0.20; crack view -0.09 x beta +1.10) - not a short call, just the worst wrapper for this view
+
+ticker     bucket   score  name
+   OXY   upstream   +0.53  Occidental
+   DVN   upstream   +0.47  Devon Energy
+  FANG   upstream   +0.47  Diamondback
+   XOP        etf   +0.46  SPDR Oil & Gas E&P ETF
+   EOG   upstream   +0.43  EOG Resources
+   COP   upstream   +0.40  ConocoPhillips
+   USO        etf   +0.38  United States Oil Fund
+   HAL   services   +0.33  Halliburton
+   SLB   services   +0.28  SLB (Schlumberger)
+   CVX integrated   +0.24  Chevron
+   XOM integrated   +0.24  ExxonMobil
+   EPD  midstream   +0.22  Enterprise Products
+   PAA  midstream   +0.22  Plains All American
+  SHEL integrated   +0.19  Shell
+    ET  midstream   +0.18  Energy Transfer
+   PSX    refiner   -0.07  Phillips 66
+   MPC    refiner   -0.17  Marathon Petroleum
+   VLO    refiner   -0.18  Valero
+
+news (40 headlines, 9 matched):
+  + Oil Prices Rebound as Middle East Supply Risks Persist
+  + Oil Prices Rebound as Hormuz Shipping Risks Persist
+  - Oil Futures Slide as Trump Says New Strikes on Iran Unlikely
+  + Strait of Hormuz Shipping Risks Push Oil Prices Up From Two-Month Lows -
+  - Oil rebounds as Hormuz shipping attacks blunt hopes for Iran truce
+  + Oil prices hit two-month lows as Iran escalation fears ease
+INFO oilx.panel: flagged 2 suspect spot prints (|spot move|>12% while CL moved <4%)
+state exported: 50 KB
+
+===== cloud cycle 2026-11-11T17:55:00Z =====
+$ oilx kalshi-scan
+{'WTI': {'KXWTI': 60, 'KXWTIW': 27, 'KXWTIMONTHLY': 0}, 'fwd': 87.25}
+{'BRENT': {'KXBRENTW': 20, 'KXBRENTMON': 30}, 'fwd': 90.75}
+maker: 6 passive quotes staged for the demo trader (rejected: low_oi 60, wing 53)
+kalshi oil scan  (fwd 87.25, sigma 53%)
+------------------------------------------------------------------------------
+      KXWTI-26NOV1214-T88.99 yes @0.17+0.01 fee  model 0.24  edge +0.06     25.6h  oi 829
+      KXWTI-26NOV1214-T88.49 yes @0.24+0.02 fee  model 0.31  edge +0.05     25.6h  oi 668 [probe]
+-- 4 flagged (not tradable) --
+      KXWTI-26NOV1214-T89.49 yes edge +0.05  [wing]
+ KXBRENTMON-26NOV3017-T79.99  no edge +0.06  [wing]
+      KXWTI-26NOV1214-T89.99 yes edge +0.04  [wing]
+      KXWTI-26NOV1314-T90.99 yes edge +0.03  [wing]
+$ oilx kalshi-demo
+demo balance $3,249.68; open contracts 0
+placed [main] yes x10 KXWTI-26NOV1214-T88.99 @0.17 (edge +0.06) -> canceled (nothing to trade against)
+placed [probe] yes x2 KXWTI-26NOV1214-T88.49 @0.24 (edge +0.05) -> canceled (nothing to trade against)
+maker: refreshing resting quotes
+  cancelled KXBRENTW-26NOV1317-T90.99 yes x5.00
+  cancelled KXWTI-26NOV1214-T87.49 yes x5.00
+  cancelled KXWTI-26NOV1214-T86.99 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T95.99 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T91.99 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T97.99 yes x5.00
+  resting yes x5 KXBRENTMON-26NOV3017-T97.99 @0.20 (fair 0.24)
+  resting yes x5 KXWTI-26NOV1214-T87.49 @0.43 (fair 0.46)
+  resting yes x5 KXWTI-26NOV1214-T86.99 @0.51 (fair 0.54)
+  resting yes x5 KXBRENTMON-26NOV3017-T91.99 @0.39 (fair 0.43)
+  resting yes x5 KXBRENTMON-26NOV3017-T95.99 @0.26 (fair 0.30)
+  resting yes x5 KXBRENTW-26NOV1317-T90.99 @0.42 (fair 0.47)
+$ oilx equity-pick
+INFO oilx.panel: flagged 2 suspect spot prints (|spot move|>12% while CL moved <4%)
+equity desk  (crude view +0.42, crack -0.09, vol 59%, news tilt +0.12)
+------------------------------------------------------------------------------
+PICK: long OXY (Occidental, upstream)  score +0.59
+  because: crude view +0.42 x beta +1.30; news tilt +0.12
+  strengths:  highest crude beta in the book (leverage + Permian scale)
+  weaknesses: debt-heavy; the same leverage cuts twice as hard on the way down
+WEAKEST EXPRESSION: VLO (score -0.19; crude view +0.42 x beta -0.20; crack view -0.09 x beta +1.10) - not a short call, just the worst wrapper for this view
+
+ticker     bucket   score  name
+   OXY   upstream   +0.59  Occidental
+   DVN   upstream   +0.53  Devon Energy
+  FANG   upstream   +0.53  Diamondback
+   XOP        etf   +0.52  SPDR Oil & Gas E&P ETF
+   EOG   upstream   +0.48  EOG Resources
+   COP   upstream   +0.45  ConocoPhillips
+   USO        etf   +0.43  United States Oil Fund
+   HAL   services   +0.37  Halliburton
+   SLB   services   +0.32  SLB (Schlumberger)
+   CVX integrated   +0.27  Chevron
+   XOM integrated   +0.26  ExxonMobil
+   PAA  midstream   +0.23  Plains All American
+   EPD  midstream   +0.23  Enterprise Products
+  SHEL integrated   +0.21  Shell
+    ET  midstream   +0.19  Energy Transfer
+   PSX    refiner   -0.08  Phillips 66
+   MPC    refiner   -0.18  Marathon Petroleum
+   VLO    refiner   -0.19  Valero
+
+news (40 headlines, 7 matched):
+  + Gold, silver rebound after CPI-driven selloff, Hormuz tensions lift crud
+  + Oil Prices Rebound as Hormuz Shipping Risks Persist
+  + Oil prices rise as investors monitor Hormuz shipping disruption
+  + Oil Prices Rebound as Middle East Supply Risks Persist
+  + Oil Prices Rise More Than 1% as Iran Rejects Removal of Enriched Nuclear
+  + Oil prices rise amid concerns of shipping disruptions in the Strait of H
+INFO oilx.panel: flagged 2 suspect spot prints (|spot move|>12% while CL moved <4%)
+state exported: 53 KB
+
+===== cloud burst 2026-11-11T21:16:12Z =====
+$ oilx burst --wait-until 10:27 --max-wait 45 --minutes 70 --interval 120
+burst: 10:27 New York is -349 min away - not this run's window; exiting
+$ oilx equity-pick
+INFO oilx.panel: flagged 2 suspect spot prints (|spot move|>12% while CL moved <4%)
+equity desk  (crude view +0.42, crack -0.09, vol 59%, news tilt +0.10)
+------------------------------------------------------------------------------
+PICK: long OXY (Occidental, upstream)  score +0.58
+  because: crude view +0.42 x beta +1.30; news tilt +0.10
+  strengths:  highest crude beta in the book (leverage + Permian scale)
+  weaknesses: debt-heavy; the same leverage cuts twice as hard on the way down
+WEAKEST EXPRESSION: VLO (score -0.19; crude view +0.42 x beta -0.20; crack view -0.09 x beta +1.10) - not a short call, just the worst wrapper for this view
+
+ticker     bucket   score  name
+   OXY   upstream   +0.58  Occidental
+   DVN   upstream   +0.51  Devon Energy
+  FANG   upstream   +0.51  Diamondback
+   XOP        etf   +0.51  SPDR Oil & Gas E&P ETF
+   EOG   upstream   +0.47  EOG Resources
+   COP   upstream   +0.44  ConocoPhillips
+   USO        etf   +0.42  United States Oil Fund
+   HAL   services   +0.36  Halliburton
+   SLB   services   +0.31  SLB (Schlumberger)
+   CVX integrated   +0.26  Chevron
+   XOM integrated   +0.25  ExxonMobil
+   EPD  midstream   +0.23  Enterprise Products
+   PAA  midstream   +0.23  Plains All American
+  SHEL integrated   +0.20  Shell
+    ET  midstream   +0.19  Energy Transfer
+   PSX    refiner   -0.08  Phillips 66
+   MPC    refiner   -0.18  Marathon Petroleum
+   VLO    refiner   -0.19  Valero
+
+news (40 headlines, 8 matched):
+  - Oil Futures Slide as Trump Says New Strikes on Iran Unlikely
+  + Crude Oil Weekly Outlook: Houthi Attacks vs. a Double Top?
+  + Gold, silver rebound after CPI-driven selloff, Hormuz tensions lift crud
+  - Oil prices rebound as Iran tensions cloud prospects for peace deal (CO1:
+  + Oil Prices Rebound as Middle East Supply Risks Persist
+  + Oil Prices Rebound as Iran Rejects Key U.S. Nuclear Demand and Strait of
+INFO oilx.panel: flagged 2 suspect spot prints (|spot move|>12% while CL moved <4%)
+state exported: 53 KB
+
+===== cloud burst 2026-11-11T21:48:14Z =====
+$ oilx burst --wait-until 10:27 --max-wait 45 --minutes 70 --interval 120
+burst: 10:27 New York is -381 min away - not this run's window; exiting
+$ oilx equity-pick
+INFO oilx.panel: flagged 2 suspect spot prints (|spot move|>12% while CL moved <4%)
+equity desk  (crude view +0.42, crack -0.09, vol 59%, news tilt +0.10)
+------------------------------------------------------------------------------
+PICK: long OXY (Occidental, upstream)  score +0.58
+  because: crude view +0.42 x beta +1.30; news tilt +0.10
+  strengths:  highest crude beta in the book (leverage + Permian scale)
+  weaknesses: debt-heavy; the same leverage cuts twice as hard on the way down
+WEAKEST EXPRESSION: VLO (score -0.19; crude view +0.42 x beta -0.20; crack view -0.09 x beta +1.10) - not a short call, just the worst wrapper for this view
+
+ticker     bucket   score  name
+   OXY   upstream   +0.58  Occidental
+   DVN   upstream   +0.51  Devon Energy
+  FANG   upstream   +0.51  Diamondback
+   XOP        etf   +0.51  SPDR Oil & Gas E&P ETF
+   EOG   upstream   +0.47  EOG Resources
+   COP   upstream   +0.44  ConocoPhillips
+   USO        etf   +0.42  United States Oil Fund
+   HAL   services   +0.36  Halliburton
+   SLB   services   +0.31  SLB (Schlumberger)
+   CVX integrated   +0.26  Chevron
+   XOM integrated   +0.25  ExxonMobil
+   EPD  midstream   +0.23  Enterprise Products
+   PAA  midstream   +0.23  Plains All American
+  SHEL integrated   +0.20  Shell
+    ET  midstream   +0.19  Energy Transfer
+   PSX    refiner   -0.08  Phillips 66
+   MPC    refiner   -0.18  Marathon Petroleum
+   VLO    refiner   -0.19  Valero
+
+news (40 headlines, 8 matched):
+  + Oil Prices Rebound as Middle East Supply Risks Persist
+  + Crude Oil Weekly Outlook: Houthi Attacks vs. a Double Top?
+  + Gold, silver rebound after CPI-driven selloff, Hormuz tensions lift crud
+  - Oil Futures Slide as Trump Says New Strikes on Iran Unlikely
+  - Oil prices rebound as Iran tensions cloud prospects for peace deal (CO1:
+  + Oil Prices Rebound as Iran Rejects Key U.S. Nuclear Demand and Strait of
+INFO oilx.panel: flagged 2 suspect spot prints (|spot move|>12% while CL moved <4%)
+state exported: 53 KB
+
+===== cloud cycle 2026-11-12T00:46:16Z =====
+$ oilx kalshi-scan
+{'WTI': {'KXWTI': 60, 'KXWTIW': 27, 'KXWTIMONTHLY': 0}, 'fwd': 86.22}
+{'BRENT': {'KXBRENTW': 20, 'KXBRENTMON': 30}, 'fwd': 90.45}
+shadow fill: yes KXWTI-26NOV1214-T87.49 @0.43 (fair at quote 0.46)
+shadow fill: yes KXWTI-26NOV1214-T86.99 @0.51 (fair at quote 0.54)
+maker: 6 passive quotes staged for the demo trader (rejected: low_oi 56, wing 62)
+kalshi oil scan  (fwd 86.22, sigma 51%)
+------------------------------------------------------------------------------
+-- 1 flagged (not tradable) --
+      KXWTI-26NOV1314-T88.99 yes edge +0.03  [wing]
+$ oilx kalshi-demo
+demo balance $3,249.68; open contracts 0
+no taker orders placed (no clean signals above the edge thresholds)
+maker: refreshing resting quotes
+  cancel FAILED KXBRENTW-26NOV1317-T90.99: DELETE /portfolio/events/orders/01a1cbbf-d448-7f2c-8398-e63a4ab3757f -> 503: {"error":{"code":"service_unavailable","message":"service_unavailable"}}
+  cancel FAILED KXBRENTMON-26NOV3017-T95.99: DELETE /portfolio/events/orders/01a1cbbf-d060-72fb-8220-0fb7ae5c89e0 -> 503: {"error":{"code":"service_unavailable","message":"service_unavailable"}}
+  cancel FAILED KXBRENTMON-26NOV3017-T91.99: DELETE /portfolio/events/orders/01a1cbbf-d060-7bc4-883a-65538ee9d851 -> 503: {"error":{"code":"service_unavailable","message":"service_unavailable"}}
+  cancel FAILED KXWTI-26NOV1214-T86.99: DELETE /portfolio/events/orders/01a1cbbf-cc78-7d7b-b5d5-938ee229cec8 -> 503: {"error":{"code":"service_unavailable","message":"service_unavailable"}}
+  cancel FAILED KXWTI-26NOV1214-T87.49: DELETE /portfolio/events/orders/01a1cbbf-cc78-7b56-a6d7-8277e9e9d6f1 -> 503: {"error":{"code":"service_unavailable","message":"service_unavailable"}}
+  cancel FAILED KXBRENTMON-26NOV3017-T97.99: DELETE /portfolio/events/orders/01a1cbbf-c890-718e-90e1-7cfdf1a334fb -> 503: {"error":{"code":"service_unavailable","message":"service_unavailable"}}
+  quote FAILED KXWTI-26NOV1214-T87.49: POST /portfolio/events/orders -> 503: {"error":{"code":"service_unavailable","message":"service_unavailable"}}
+  quote FAILED KXBRENTMON-26NOV3017-T97.99: POST /portfolio/events/orders -> 503: {"error":{"code":"service_unavailable","message":"service_unavailable"}}
+  quote FAILED KXWTI-26NOV1214-T86.49: POST /portfolio/events/orders -> 503: {"error":{"code":"service_unavailable","message":"service_unavailable"}}
+  quote FAILED KXWTI-26NOV1214-T86.99: POST /portfolio/events/orders -> 503: {"error":{"code":"service_unavailable","message":"service_unavailable"}}
+  quote FAILED KXBRENTMON-26NOV3017-T91.99: POST /portfolio/events/orders -> 503: {"error":{"code":"service_unavailable","message":"service_unavailable"}}
+  quote FAILED KXBRENTMON-26NOV3017-T95.99: POST /portfolio/events/orders -> 503: {"error":{"code":"service_unavailable","message":"service_unavailable"}}
+$ oilx equity-pick
+INFO oilx.panel: flagged 2 suspect spot prints (|spot move|>12% while CL moved <4%)
+equity desk  (crude view +0.42, crack -0.09, vol 59%, news tilt +0.12)
+------------------------------------------------------------------------------
+PICK: long OXY (Occidental, upstream)  score +0.59
+  because: crude view +0.42 x beta +1.30; news tilt +0.12
+  strengths:  highest crude beta in the book (leverage + Permian scale)
+  weaknesses: debt-heavy; the same leverage cuts twice as hard on the way down
+WEAKEST EXPRESSION: VLO (score -0.19; crude view +0.42 x beta -0.20; crack view -0.09 x beta +1.10) - not a short call, just the worst wrapper for this view
+
+ticker     bucket   score  name
+   OXY   upstream   +0.59  Occidental
+   DVN   upstream   +0.53  Devon Energy
+  FANG   upstream   +0.53  Diamondback
+   XOP        etf   +0.52  SPDR Oil & Gas E&P ETF
+   EOG   upstream   +0.48  EOG Resources
+   COP   upstream   +0.45  ConocoPhillips
+   USO        etf   +0.43  United States Oil Fund
+   HAL   services   +0.37  Halliburton
+   SLB   services   +0.32  SLB (Schlumberger)
+   CVX integrated   +0.27  Chevron
+   XOM integrated   +0.26  ExxonMobil
+   PAA  midstream   +0.23  Plains All American
+   EPD  midstream   +0.23  Enterprise Products
+  SHEL integrated   +0.21  Shell
+    ET  midstream   +0.19  Energy Transfer
+   PSX    refiner   -0.08  Phillips 66
+   MPC    refiner   -0.18  Marathon Petroleum
+   VLO    refiner   -0.19  Valero
+
+news (40 headlines, 7 matched):
+  + Oil Prices Rebound as Middle East Supply Risks Persist
+  + Crude Oil Weekly Outlook: Houthi Attacks vs. a Double Top?
+  - Oil prices rebound as Iran tensions cloud prospects for peace deal (CO1:
+  + Oil Prices Rebound as Iran Rejects Key U.S. Nuclear Demand and Strait of
+  + Gold, silver rebound after CPI-driven selloff, Hormuz tensions lift crud
+  + Iran Reportedly Attacked Shipping Navigation Systems in Oman. Oil Prices
+INFO oilx.panel: flagged 2 suspect spot prints (|spot move|>12% while CL moved <4%)
+state exported: 53 KB
+
+===== cloud cycle 2026-11-12T05:30:28Z =====
+$ oilx kalshi-scan
+{'WTI': {'KXWTI': 60, 'KXWTIW': 27, 'KXWTIMONTHLY': 0}, 'fwd': 85.8}
+{'BRENT': {'KXBRENTW': 20, 'KXBRENTMON': 30}, 'fwd': 89.94}
+shadow fill: yes KXWTI-26NOV1214-T87.49 @0.22 (fair at quote 0.26)
+shadow fill: yes KXWTI-26NOV1214-T86.49 @0.42 (fair at quote 0.44)
+shadow fill: yes KXWTI-26NOV1214-T86.99 @0.31 (fair at quote 0.35)
+maker: 6 passive quotes staged for the demo trader (rejected: low_oi 54, wing 65)
+kalshi oil scan  (fwd 85.80, sigma 51%)
+------------------------------------------------------------------------------
+-- 1 flagged (not tradable) --
+      KXWTI-26NOV1214-T87.49 yes edge +0.05  [wing]
+$ oilx kalshi-demo
+demo balance $3,249.68; open contracts 0
+no taker orders placed (no clean signals above the edge thresholds)
+maker: refreshing resting quotes
+  cancelled KXBRENTW-26NOV1317-T90.99 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T95.99 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T91.99 yes x5.00
+  cancelled KXWTI-26NOV1214-T86.99 yes x5.00
+  cancelled KXWTI-26NOV1214-T87.49 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T97.99 yes x5.00
+  resting yes x5 KXWTI-26NOV1214-T86.49 @0.32 (fair 0.35)
+  resting yes x5 KXBRENTMON-26NOV3017-T97.99 @0.18 (fair 0.22)
+  resting yes x5 KXWTI-26NOV1214-T86.99 @0.20 (fair 0.25)
+  resting yes x5 KXBRENTMON-26NOV3017-T91.99 @0.37 (fair 0.42)
+  resting yes x5 KXWTI-26NOV1214-T85.99 @0.43 (fair 0.45)
+  resting yes x5 KXBRENTMON-26NOV3017-T95.99 @0.24 (fair 0.28)
+$ oilx equity-pick
+INFO oilx.panel: flagged 2 suspect spot prints (|spot move|>12% while CL moved <4%)
+equity desk  (crude view +0.39, crack -0.12, vol 53%, news tilt +0.05)
+------------------------------------------------------------------------------
+PICK: long OXY (Occidental, upstream)  score +0.52
+  because: crude view +0.39 x beta +1.30
+  strengths:  highest crude beta in the book (leverage + Permian scale)
+  weaknesses: debt-heavy; the same leverage cuts twice as hard on the way down
+WEAKEST EXPRESSION: VLO (score -0.21; crude view +0.39 x beta -0.20; crack view -0.12 x beta +1.10) - not a short call, just the worst wrapper for this view
+
+ticker     bucket   score  name
+   OXY   upstream   +0.52  Occidental
+   DVN   upstream   +0.46  Devon Energy
+  FANG   upstream   +0.46  Diamondback
+   XOP        etf   +0.44  SPDR Oil & Gas E&P ETF
+   EOG   upstream   +0.41  EOG Resources
+   COP   upstream   +0.38  ConocoPhillips
+   USO        etf   +0.38  United States Oil Fund
+   HAL   services   +0.32  Halliburton
+   SLB   services   +0.28  SLB (Schlumberger)
+   CVX integrated   +0.22  Chevron
+   XOM integrated   +0.21  ExxonMobil
+   PAA  midstream   +0.18  Plains All American
+   EPD  midstream   +0.17  Enterprise Products
+  SHEL integrated   +0.17  Shell
+    ET  midstream   +0.15  Energy Transfer
+   PSX    refiner   -0.10  Phillips 66
+   MPC    refiner   -0.20  Marathon Petroleum
+   VLO    refiner   -0.21  Valero
+
+news (40 headlines, 6 matched):
+  + Oil Prices Rebound as Middle East Supply Risks Persist
+  + Oil Prices Extend Gains on Escalating Middle East Hostilities
+  + Crude Oil Weekly Outlook: Houthi Attacks vs. a Double Top?
+  - Oil falls over $1 on easing geopolitical fears and oversupply worries
+  - Oil prices rebound as Iran tensions cloud prospects for peace deal (CO1:
+  + Oil Prices Rebound as Iran Rejects Key U.S. Nuclear Demand and Strait of
+INFO oilx.panel: flagged 2 suspect spot prints (|spot move|>12% while CL moved <4%)
+state exported: 55 KB
+
+===== cloud cycle 2026-11-12T09:49:09Z =====
+$ oilx kalshi-scan
+{'WTI': {'KXWTI': 60, 'KXWTIW': 27, 'KXWTIMONTHLY': 0}, 'fwd': 86.05}
+{'BRENT': {'KXBRENTW': 20, 'KXBRENTMON': 30}, 'fwd': 92.32}
+maker: 6 passive quotes staged for the demo trader (rejected: low_oi 44, stale_strip 27, wing 53)
+kalshi oil scan  (fwd 86.05, sigma 51%)
+------------------------------------------------------------------------------
+no signals above the edge threshold - which is the usual, honest answer
+$ oilx kalshi-demo
+demo balance $3,249.68; open contracts 0
+no taker orders placed (no clean signals above the edge thresholds)
+maker: refreshing resting quotes
+  cancelled KXBRENTMON-26NOV3017-T95.99 yes x5.00
+  cancelled KXWTI-26NOV1214-T85.99 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T91.99 yes x5.00
+  cancelled KXWTI-26NOV1214-T86.99 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T97.99 yes x5.00
+  cancelled KXWTI-26NOV1214-T86.49 yes x5.00
+  resting yes x5 KXWTI-26NOV1214-T86.49 @0.35 (fair 0.38)
+  resting yes x5 KXBRENTMON-26NOV3017-T97.99 @0.24 (fair 0.28)
+  resting yes x5 KXWTI-26NOV1214-T86.99 @0.23 (fair 0.26)
+  resting yes x5 KXWTI-26NOV1214-T85.99 @0.49 (fair 0.51)
+  resting yes x5 KXBRENTMON-26NOV3017-T99.99 @0.18 (fair 0.23)
+  resting yes x5 KXBRENTMON-26NOV3017-T91.99 @0.44 (fair 0.49)
+$ oilx equity-pick
+INFO oilx.panel: flagged 2 suspect spot prints (|spot move|>12% while CL moved <4%)
+equity desk  (crude view +0.39, crack -0.12, vol 53%, news tilt +0.12)
+------------------------------------------------------------------------------
+PICK: long OXY (Occidental, upstream)  score +0.56
+  because: crude view +0.39 x beta +1.30; news tilt +0.12
+  strengths:  highest crude beta in the book (leverage + Permian scale)
+  weaknesses: debt-heavy; the same leverage cuts twice as hard on the way down
+WEAKEST EXPRESSION: VLO (score -0.22; crude view +0.39 x beta -0.20; crack view -0.12 x beta +1.10) - not a short call, just the worst wrapper for this view
+
+ticker     bucket   score  name
+   OXY   upstream   +0.56  Occidental
+   DVN   upstream   +0.50  Devon Energy
+  FANG   upstream   +0.50  Diamondback
+   XOP        etf   +0.48  SPDR Oil & Gas E&P ETF
+   EOG   upstream   +0.45  EOG Resources
+   COP   upstream   +0.42  ConocoPhillips
+   USO        etf   +0.42  United States Oil Fund
+   HAL   services   +0.35  Halliburton
+   SLB   services   +0.30  SLB (Schlumberger)
+   CVX integrated   +0.24  Chevron
+   XOM integrated   +0.22  ExxonMobil
+   PAA  midstream   +0.19  Plains All American
+  SHEL integrated   +0.18  Shell
+   EPD  midstream   +0.18  Enterprise Products
+    ET  midstream   +0.16  Energy Transfer
+   PSX    refiner   -0.10  Phillips 66
+   MPC    refiner   -0.21  Marathon Petroleum
+   VLO    refiner   -0.22  Valero
+
+news (40 headlines, 7 matched):
+  + Oil Prices Rise as Iran Threatens US Bases Across Europe and Middle East
+  + Oil Prices Extend Gains on Escalating Middle East Hostilities
+  + Oil Prices Rebound as Middle East Supply Risks Persist
+  + Lull in Hormuz shipping attacks drives oil prices down
+  + Oil prices rebound as Iran tensions threaten Strait of Hormuz
+  - Oil falls over $1 on easing geopolitical fears and oversupply worries
+INFO oilx.panel: flagged 2 suspect spot prints (|spot move|>12% while CL moved <4%)
+state exported: 53 KB
+
+===== cloud cycle 2026-11-12T18:21:33Z =====
+$ oilx kalshi-scan
+{'WTI': {'KXWTI': 60, 'KXWTIW': 27, 'KXWTIMONTHLY': 0}, 'fwd': 88.24}
+{'BRENT': {'KXBRENTW': 20, 'KXBRENTMON': 30}, 'fwd': 92.74}
+maker: 6 passive quotes staged for the demo trader (rejected: low_oi 38, window 30, wing 53)
+kalshi oil scan  (fwd 88.24, sigma 51%)
+------------------------------------------------------------------------------
+no signals above the edge threshold - which is the usual, honest answer
+$ oilx kalshi-demo
+demo balance $3,244.33; open contracts 15
+no taker orders placed (no clean signals above the edge thresholds)
+maker: refreshing resting quotes
+  cancelled KXBRENTMON-26NOV3017-T91.99 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T99.99 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T97.99 yes x5.00
+  resting yes x5 KXBRENTMON-26NOV3017-T97.99 @0.27 (fair 0.31)
+  resting yes x5 KXBRENTMON-26NOV3017-T99.99 @0.21 (fair 0.25)
+  resting no x5 KXBRENTMON-26NOV3017-T91.99 @0.43 (fair 0.48)
+  resting yes x5 KXBRENTMON-26NOV3017-T95.99 @0.33 (fair 0.38)
+  resting yes x5 KXBRENTW-26NOV1317-T90.99 @0.70 (fair 0.74)
+  resting yes x5 KXBRENTMON-26NOV3017-T93.99 @0.40 (fair 0.45)
+$ oilx equity-pick
+INFO oilx.panel: flagged 2 suspect spot prints (|spot move|>12% while CL moved <4%)
+equity desk  (crude view +0.39, crack -0.12, vol 53%, news tilt +0.00)
+------------------------------------------------------------------------------
+PICK: long OXY (Occidental, upstream)  score +0.48
+  because: crude view +0.39 x beta +1.30
+  strengths:  highest crude beta in the book (leverage + Permian scale)
+  weaknesses: debt-heavy; the same leverage cuts twice as hard on the way down
+WEAKEST EXPRESSION: VLO (score -0.21; crude view +0.39 x beta -0.20; crack view -0.12 x beta +1.10) - not a short call, just the worst wrapper for this view
+
+ticker     bucket   score  name
+   OXY   upstream   +0.48  Occidental
+   DVN   upstream   +0.43  Devon Energy
+  FANG   upstream   +0.43  Diamondback
+   XOP        etf   +0.42  SPDR Oil & Gas E&P ETF
+   EOG   upstream   +0.39  EOG Resources
+   COP   upstream   +0.36  ConocoPhillips
+   USO        etf   +0.36  United States Oil Fund
+   HAL   services   +0.30  Halliburton
+   SLB   services   +0.26  SLB (Schlumberger)
+   CVX integrated   +0.20  Chevron
+   XOM integrated   +0.19  ExxonMobil
+   PAA  midstream   +0.18  Plains All American
+   EPD  midstream   +0.17  Enterprise Products
+  SHEL integrated   +0.15  Shell
+    ET  midstream   +0.14  Energy Transfer
+   PSX    refiner   -0.10  Phillips 66
+   MPC    refiner   -0.20  Marathon Petroleum
+   VLO    refiner   -0.21  Valero
+
+news (40 headlines, 2 matched):
+  - Oil prices fall due to increased production despite tensions in Hormuz
+  + Oil Prices Slip as Rising OPEC+ Production and Peace Prospects Offset Mi
+INFO oilx.panel: flagged 2 suspect spot prints (|spot move|>12% while CL moved <4%)
+state exported: 53 KB
+
+===== cloud cycle 2026-11-13T00:28:29Z =====
+$ oilx kalshi-scan
+{'WTI': {'KXWTI': 30, 'KXWTIW': 27, 'KXWTIMONTHLY': 0}, 'fwd': 88.32}
+{'BRENT': {'KXBRENTW': 20, 'KXBRENTMON': 30}, 'fwd': 93.74}
+shadow fill: no KXBRENTMON-26NOV3017-T91.99 @0.43 (fair at quote 0.48)
+maker: 6 passive quotes staged for the demo trader (rejected: low_oi 24, wing 65)
+kalshi oil scan  (fwd 88.32, sigma 52%)
+------------------------------------------------------------------------------
+      KXWTI-26NOV1314-T86.99  no @0.20+0.02 fee  model 0.27  edge +0.05     19.0h  oi 1,152 [probe]
+      KXWTI-26NOV1314-T87.49  no @0.30+0.02 fee  model 0.35  edge +0.03     19.0h  oi 969 [probe]
+-- 5 flagged (not tradable) --
+      KXWTI-26NOV1314-T86.49  no edge +0.08  [wing]
+      KXWTI-26NOV1314-T85.99  no edge +0.06  [wing]
+KXBRENTMON-26NOV3017-T115.99  no edge +0.06  [wing]
+KXBRENTMON-26NOV3017-T113.99  no edge +0.05  [wing]
+      KXWTI-26NOV1314-T85.49  no edge +0.03  [wing]
+$ oilx kalshi-demo
+demo balance $3,244.33; open contracts 15
+placed [probe] no x2 KXWTI-26NOV1314-T86.99 @0.20 (edge +0.05) -> canceled (nothing to trade against)
+placed [probe] no x2 KXWTI-26NOV1314-T87.49 @0.30 (edge +0.03) -> canceled (nothing to trade against)
+maker: refreshing resting quotes
+  cancelled KXBRENTMON-26NOV3017-T93.99 yes x5.00
+  cancelled KXBRENTW-26NOV1317-T90.99 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T95.99 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T91.99 no x5.00
+  cancelled KXBRENTMON-26NOV3017-T99.99 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T97.99 yes x5.00
+  resting yes x5 KXBRENTMON-26NOV3017-T97.99 @0.29 (fair 0.33)
+  resting no x5 KXBRENTMON-26NOV3017-T99.99 @0.69 (fair 0.73)
+  resting yes x5 KXWTI-26NOV1314-T88.49 @0.44 (fair 0.46)
+  resting no x5 KXBRENTMON-26NOV3017-T95.99 @0.56 (fair 0.60)
+  resting no x5 KXBRENTMON-26NOV3017-T91.99 @0.40 (fair 0.45)
+  resting yes x5 KXBRENTW-26NOV1317-T94.99 @0.25 (fair 0.30)
+$ oilx equity-pick
+INFO oilx.panel: flagged 2 suspect spot prints (|spot move|>12% while CL moved <4%)
+equity desk  (crude view +0.39, crack -0.12, vol 53%, news tilt +0.07)
+------------------------------------------------------------------------------
+PICK: long OXY (Occidental, upstream)  score +0.53
+  because: crude view +0.39 x beta +1.30
+  strengths:  highest crude beta in the book (leverage + Permian scale)
+  weaknesses: debt-heavy; the same leverage cuts twice as hard on the way down
+WEAKEST EXPRESSION: VLO (score -0.21; crude view +0.39 x beta -0.20; crack view -0.12 x beta +1.10) - not a short call, just the worst wrapper for this view
+
+ticker     bucket   score  name
+   OXY   upstream   +0.53  Occidental
+   DVN   upstream   +0.47  Devon Energy
+  FANG   upstream   +0.47  Diamondback
+   XOP        etf   +0.46  SPDR Oil & Gas E&P ETF
+   EOG   upstream   +0.42  EOG Resources
+   COP   upstream   +0.39  ConocoPhillips
+   USO        etf   +0.39  United States Oil Fund
+   HAL   services   +0.33  Halliburton
+   SLB   services   +0.29  SLB (Schlumberger)
+   CVX integrated   +0.22  Chevron
+   XOM integrated   +0.21  ExxonMobil
+   PAA  midstream   +0.18  Plains All American
+   EPD  midstream   +0.18  Enterprise Products
+  SHEL integrated   +0.17  Shell
+    ET  midstream   +0.15  Energy Transfer
+   PSX    refiner   -0.10  Phillips 66
+   MPC    refiner   -0.20  Marathon Petroleum
+   VLO    refiner   -0.21  Valero
+
+news (40 headlines, 5 matched):
+  + Oil Prices Squeezed Between Peace Hopes and Iran Escalation Risk
+  + Oil Prices Rise $1/Barrel As Disruptions Continue in Strait of Hormuz
+  + Energy briefs–oil prices affected by more attacks in Middle East
+  + Oil prices rise after Iran reports strikes
+  - Oil prices fall due to increased production despite tensions in Hormuz
+INFO oilx.panel: flagged 2 suspect spot prints (|spot move|>12% while CL moved <4%)
+state exported: 57 KB
+
+===== cloud cycle 2026-11-13T09:29:33Z =====
+$ oilx kalshi-scan
+{'WTI': {'KXWTI': 60, 'KXWTIW': 27, 'KXWTIMONTHLY': 0}, 'fwd': 88.51}
+{'BRENT': {'KXBRENTW': 20, 'KXBRENTMON': 30}, 'fwd': 93.66}
+shadow fill: yes KXBRENTW-26NOV1317-T94.99 @0.25 (fair at quote 0.30)
+maker: 6 passive quotes staged for the demo trader (rejected: low_oi 52, wing 69)
+kalshi oil scan  (fwd 88.51, sigma 52%)
+------------------------------------------------------------------------------
+      KXWTI-26NOV1314-T89.49  no @0.66+0.02 fee  model 0.74  edge +0.06     10.0h  oi 1,170
+-- 5 flagged (not tradable) --
+      KXWTI-26NOV1314-T90.49  no edge +0.07  [wing]
+      KXWTI-26NOV1314-T90.99  no edge +0.06  [wing]
+      KXWTI-26NOV1314-T91.49  no edge +0.06  [wing]
+KXBRENTMON-26NOV3017-T115.99  no edge +0.05  [wing]
+      KXWTI-26NOV1314-T91.99  no edge +0.05  [wing]
+$ oilx kalshi-demo
+demo balance $3,259.33; open contracts 0
+placed [main] no x10 KXWTI-26NOV1314-T89.49 @0.66 (edge +0.06) -> canceled (nothing to trade against)
+maker: refreshing resting quotes
+  cancelled KXBRENTW-26NOV1317-T94.99 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T91.99 no x5.00
+  cancelled KXBRENTMON-26NOV3017-T95.99 no x5.00
+  cancelled KXWTI-26NOV1314-T88.49 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T99.99 no x5.00
+  cancelled KXBRENTMON-26NOV3017-T97.99 yes x5.00
+  resting yes x5 KXBRENTMON-26NOV3017-T97.99 @0.28 (fair 0.33)
+  resting yes x5 KXWTI-26NOV1314-T88.49 @0.48 (fair 0.50)
+  resting no x5 KXBRENTMON-26NOV3017-T99.99 @0.69 (fair 0.73)
+  resting no x5 KXBRENTMON-26NOV3017-T95.99 @0.56 (fair 0.60)
+  resting no x5 KXBRENTMON-26NOV3017-T91.99 @0.40 (fair 0.45)
+  resting yes x5 KXWTIW-26NOV1314-B88.50 @0.23 (fair 0.25)
+$ oilx equity-pick
+INFO oilx.panel: flagged 2 suspect spot prints (|spot move|>12% while CL moved <4%)
+equity desk  (crude view +0.28, crack -0.09, vol 52%, news tilt +0.14)
+------------------------------------------------------------------------------
+PICK: long OXY (Occidental, upstream)  score +0.43
+  because: crude view +0.28 x beta +1.30; news tilt +0.14
+  strengths:  highest crude beta in the book (leverage + Permian scale)
+  weaknesses: debt-heavy; the same leverage cuts twice as hard on the way down
+WEAKEST EXPRESSION: VLO (score -0.17; crude view +0.28 x beta -0.20; crack view -0.09 x beta +1.10) - not a short call, just the worst wrapper for this view
+
+ticker     bucket   score  name
+   OXY   upstream   +0.43  Occidental
+   DVN   upstream   +0.39  Devon Energy
+  FANG   upstream   +0.39  Diamondback
+   XOP        etf   +0.38  SPDR Oil & Gas E&P ETF
+   EOG   upstream   +0.35  EOG Resources
+   COP   upstream   +0.33  ConocoPhillips
+   USO        etf   +0.32  United States Oil Fund
+   HAL   services   +0.27  Halliburton
+   SLB   services   +0.23  SLB (Schlumberger)
+   CVX integrated   +0.19  Chevron
+   XOM integrated   +0.18  ExxonMobil
+   PAA  midstream   +0.16  Plains All American
+   EPD  midstream   +0.16  Enterprise Products
+  SHEL integrated   +0.14  Shell
+    ET  midstream   +0.13  Energy Transfer
+   PSX    refiner   -0.08  Phillips 66
+   MPC    refiner   -0.16  Marathon Petroleum
+   VLO    refiner   -0.17  Valero
+
+news (40 headlines, 6 matched):
+  + Oil Prices Rise as Middle East Supply Risks Persist
+  + Oil Prices Head for Second Weekly Loss Despite Fresh Middle East Attacks
+  + Oil Prices Squeezed Between Peace Hopes and Iran Escalation Risk
+  + Oil Prices Rebound as Middle East Supply Risks Persist
+  + Oil Prices Rise $1/Barrel As Disruptions Continue in Strait of Hormuz
+  + Energy briefs–oil prices affected by more attacks in Middle East
+INFO oilx.panel: flagged 2 suspect spot prints (|spot move|>12% while CL moved <4%)
+state exported: 57 KB
+
+===== cloud cycle 2026-11-13T17:45:58Z =====
+$ oilx kalshi-scan
+{'WTI': {'KXWTI': 60, 'KXWTIW': 27, 'KXWTIMONTHLY': 0}, 'fwd': 88.58}
+{'BRENT': {'KXBRENTW': 20, 'KXBRENTMON': 30}, 'fwd': 93.17}
+maker: 6 passive quotes staged for the demo trader (rejected: low_oi 41, window 57, wing 31)
+kalshi oil scan  (fwd 88.58, sigma 51%)
+------------------------------------------------------------------------------
+-- 1 flagged (not tradable) --
+      KXWTI-26NOV1614-T93.49 yes edge +0.05  [wing]
+$ oilx kalshi-demo
+demo balance $3,259.33; open contracts 0
+no taker orders placed (no clean signals above the edge thresholds)
+maker: refreshing resting quotes
+  cancelled KXWTIW-26NOV1314-B88.50 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T91.99 no x5.00
+  cancelled KXBRENTMON-26NOV3017-T95.99 no x5.00
+  cancelled KXBRENTMON-26NOV3017-T99.99 no x5.00
+  cancelled KXWTI-26NOV1314-T88.49 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T97.99 yes x5.00
+  resting yes x5 KXBRENTMON-26NOV3017-T97.99 @0.28 (fair 0.32)
+  resting yes x5 KXBRENTMON-26NOV3017-T99.99 @0.21 (fair 0.26)
+  resting yes x5 KXBRENTMON-26NOV3017-T95.99 @0.35 (fair 0.39)
+  resting no x5 KXBRENTMON-26NOV3017-T91.99 @0.40 (fair 0.45)
+  resting yes x5 KXBRENTMON-26NOV3017-T93.99 @0.42 (fair 0.47)
+  resting yes x5 KXBRENTW-26NOV1317-T92.99 @0.52 (fair 0.57)
+$ oilx equity-pick
+INFO oilx.panel: flagged 2 suspect spot prints (|spot move|>12% while CL moved <4%)
+equity desk  (crude view +0.28, crack -0.09, vol 52%, news tilt +0.02)
+------------------------------------------------------------------------------
+PICK: long OXY (Occidental, upstream)  score +0.35
+  because: crude view +0.28 x beta +1.30
+  strengths:  highest crude beta in the book (leverage + Permian scale)
+  weaknesses: debt-heavy; the same leverage cuts twice as hard on the way down
+WEAKEST EXPRESSION: VLO (score -0.16; crude view +0.28 x beta -0.20; crack view -0.09 x beta +1.10) - not a short call, just the worst wrapper for this view
+
+ticker     bucket   score  name
+   OXY   upstream   +0.35  Occidental
+   DVN   upstream   +0.32  Devon Energy
+  FANG   upstream   +0.32  Diamondback
+   XOP        etf   +0.31  SPDR Oil & Gas E&P ETF
+   EOG   upstream   +0.29  EOG Resources
+   COP   upstream   +0.27  ConocoPhillips
+   USO        etf   +0.26  United States Oil Fund
+   HAL   services   +0.22  Halliburton
+   SLB   services   +0.19  SLB (Schlumberger)
+   CVX integrated   +0.16  Chevron
+   XOM integrated   +0.15  ExxonMobil
+   EPD  midstream   +0.15  Enterprise Products
+   PAA  midstream   +0.14  Plains All American
+    ET  midstream   +0.12  Energy Transfer
+  SHEL integrated   +0.12  Shell
+   PSX    refiner   -0.07  Phillips 66
+   MPC    refiner   -0.15  Marathon Petroleum
+   VLO    refiner   -0.16  Valero
+
+news (40 headlines, 9 matched):
+  - Even with a durable ceasefire, these factors will support oil prices: BC
+  + Oil Prices Rebound as Middle East Supply Risks Persist
+  - Oil Futures Slide as Trump Says New Strikes on Iran Unlikely
+  - Oil Prices Crash 32% From $136 Peak as IEA Forecasts Global Supply Surpl
+  + Crude oil jumps as escalation risks increase after Trump says the US doe
+  + Oil Prices Squeezed Between Peace Hopes and Iran Escalation Risk
+INFO oilx.panel: flagged 2 suspect spot prints (|spot move|>12% while CL moved <4%)
+state exported: 56 KB
+
+===== cloud cycle 2026-11-13T23:36:18Z =====
+$ oilx kalshi-scan
+{'WTI': {'KXWTI': 30, 'KXWTIW': 0, 'KXWTIMONTHLY': 0}, 'fwd': 88.73}
+{'BRENT': {'KXBRENTW': 20, 'KXBRENTMON': 30}, 'fwd': 92.49}
+forward check: BRENT quote 96.08 vs the market's own 92.49 (3.9% apart) - too far to be a delay; every BRENT market is flagged and left alone this cycle
+shadow fill: no KXBRENTMON-26NOV3017-T91.99 @0.40 (fair at quote 0.45)
+maker: 5 passive quotes staged for the demo trader (rejected: low_oi 18, stale_strip 50, wing 7)
+kalshi oil scan  (fwd 88.73, sigma 50%)
+------------------------------------------------------------------------------
+      KXWTI-26NOV1614-T91.49 yes @0.15+0.01 fee  model 0.24  edge +0.08     67.9h  oi 510
+      KXWTI-26NOV1614-T90.49 yes @0.25+0.02 fee  model 0.32  edge +0.05     67.9h  oi 497
+-- 8 flagged (not tradable) --
+      KXWTI-26NOV1614-T85.99  no edge +0.11  [wing]
+      KXWTI-26NOV1614-T85.49  no edge +0.10  [wing]
+      KXWTI-26NOV1614-T91.99 yes edge +0.07  [wing]
+      KXWTI-26NOV1614-T84.49  no edge +0.07  [wing]
+KXBRENTMON-26NOV3017-T115.99  no edge +0.07  [stale_underlying,wing]
+KXBRENTMON-26NOV3017-T113.99  no edge +0.06  [stale_underlying,wing]
+ KXBRENTMON-26NOV3017-T83.99  no edge +0.05  [stale_underlying,wing]
+      KXWTI-26NOV1614-T93.49 yes edge +0.04  [wing]
+$ oilx kalshi-demo
+demo balance $3,259.33; open contracts 0
+placed [main] yes x10 KXWTI-26NOV1614-T91.49 @0.15 (edge +0.08) -> canceled (nothing to trade against)
+placed [main] yes x10 KXWTI-26NOV1614-T90.49 @0.25 (edge +0.05) -> canceled (nothing to trade against)
+maker: refreshing resting quotes
+  cancelled KXBRENTMON-26NOV3017-T93.99 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T91.99 no x5.00
+  cancelled KXBRENTMON-26NOV3017-T95.99 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T99.99 yes x5.00
+  cancelled KXBRENTMON-26NOV3017-T97.99 yes x5.00
+  resting yes x5 KXWTI-26NOV1614-T88.99 @0.44 (fair 0.46)
+  resting yes x5 KXWTI-26NOV1614-T88.49 @0.49 (fair 0.52)
+  resting yes x5 KXWTI-26NOV1614-T89.99 @0.31 (fair 0.37)
+$ oilx equity-pick
+INFO oilx.panel: flagged 2 suspect spot prints (|spot move|>12% while CL moved <4%)
+equity desk  (crude view +0.28, crack -0.09, vol 52%, news tilt +0.07)
+------------------------------------------------------------------------------
+PICK: long OXY (Occidental, upstream)  score +0.39
+  because: crude view +0.28 x beta +1.30
+  strengths:  highest crude beta in the book (leverage + Permian scale)
+  weaknesses: debt-heavy; the same leverage cuts twice as hard on the way down
+WEAKEST EXPRESSION: VLO (score -0.17; crude view +0.28 x beta -0.20; crack view -0.09 x beta +1.10) - not a short call, just the worst wrapper for this view
+
+ticker     bucket   score  name
+   OXY   upstream   +0.39  Occidental
+   DVN   upstream   +0.34  Devon Energy
+  FANG   upstream   +0.34  Diamondback
+   XOP        etf   +0.33  SPDR Oil & Gas E&P ETF
+   EOG   upstream   +0.31  EOG Resources
+   COP   upstream   +0.29  ConocoPhillips
+   USO        etf   +0.28  United States Oil Fund
+   HAL   services   +0.24  Halliburton
+   SLB   services   +0.21  SLB (Schlumberger)
+   CVX integrated   +0.17  Chevron
+   XOM integrated   +0.16  ExxonMobil
+   EPD  midstream   +0.15  Enterprise Products
+   PAA  midstream   +0.15  Plains All American
+  SHEL integrated   +0.13  Shell
+    ET  midstream   +0.12  Energy Transfer
+   PSX    refiner   -0.08  Phillips 66
+   MPC    refiner   -0.16  Marathon Petroleum
+   VLO    refiner   -0.17  Valero
+
+news (40 headlines, 11 matched):
+  + Oil Prices Extend Gains on Escalating Middle East Hostilities
+  + Oil Prices Rose After US Forces Downed Iranian Drones
+  - Oil prices set for second straight weekly drop on signs of growing suppl
+  - Oil Prices Set for Second Weekly Decline Amid Growing Supply Surplus
+  + Oil Prices Rebound as Middle East Supply Risks Persist
+  + Iraq's Oil Production Soars to 2019 High as Hormuz Flows Surge
+INFO oilx.panel: flagged 2 suspect spot prints (|spot move|>12% while CL moved <4%)
+state exported: 60 KB
+
+===== cloud cycle 2026-11-14T06:20:20Z =====
+$ oilx kalshi-scan
+{'WTI': {'KXWTI': 60, 'KXWTIW': 27, 'KXWTIMONTHLY': 0}, 'fwd': 88.6}
+{'BRENT': {'KXBRENTW': 20, 'KXBRENTMON': 30}, 'fwd': 92.49}
+forward check: BRENT quote 95.84 vs the market's own 92.49 (3.6% apart) - too far to be a delay; every BRENT market is flagged and left alone this cycle
+shadow fill: yes KXWTI-26NOV1614-T89.99 @0.31 (fair at quote 0.37)
+maker: 5 passive quotes staged for the demo trader (rejected: low_oi 47, stale_strip 77, wing 8)
+kalshi oil scan  (fwd 88.60, sigma 50%)
+------------------------------------------------------------------------------
+      KXWTI-26NOV1614-T90.99 yes @0.19+0.02 fee  model 0.26  edge +0.05     61.2h  oi 268 [probe]
+-- 8 flagged (not tradable) --
+      KXWTI-26NOV1614-T85.99  no edge +0.11  [wing]
+      KXWTI-26NOV1614-T85.49  no edge +0.09  [wing]
+      KXWTI-26NOV1614-T84.49  no edge +0.06  [wing]
+      KXWTI-26NOV1614-T91.49 yes edge +0.06  [wing]
+      KXWTI-26NOV1614-T91.99 yes edge +0.05  [wing]
+KXBRENTMON-26NOV3017-T119.99  no edge +0.07  [stale_underlying,wing]
+KXBRENTMON-26NOV3017-T115.99  no edge +0.06  [stale_underlying,wing]
+      KXWTI-26NOV1614-T93.49 yes edge +0.04  [wing]
+$ oilx kalshi-demo
+demo balance $3,258.89; open contracts 1
+placed [probe] yes x2 KXWTI-26NOV1614-T90.99 @0.19 (edge +0.05) -> canceled (nothing to trade against)
+maker: refreshing resting quotes
+  cancelled KXWTI-26NOV1614-T89.99 yes x5.00
+  cancelled KXWTI-26NOV1614-T88.49 yes x5.00
+  cancelled KXWTI-26NOV1614-T88.99 yes x4.00
+  resting yes x5 KXWTI-26NOV1614-T89.99 @0.29 (fair 0.35)
+  resting yes x5 KXWTI-26NOV1614-T88.49 @0.48 (fair 0.50)
+  resting yes x5 KXWTI-26NOV1614-T90.49 @0.25 (fair 0.30)
+  resting no x5 KXWTI-26NOV1614-T87.99 @0.39 (fair 0.44)
+$ oilx equity-pick
+INFO oilx.panel: flagged 2 suspect spot prints (|spot move|>12% while CL moved <4%)
+equity desk  (crude view +0.27, crack -0.13, vol 52%, news tilt +0.05)
+------------------------------------------------------------------------------
+PICK: long OXY (Occidental, upstream)  score +0.37
+  because: crude view +0.27 x beta +1.30
+  strengths:  highest crude beta in the book (leverage + Permian scale)
+  weaknesses: debt-heavy; the same leverage cuts twice as hard on the way down
+WEAKEST EXPRESSION: VLO (score -0.20; crude view +0.27 x beta -0.20; crack view -0.13 x beta +1.10) - not a short call, just the worst wrapper for this view
+
+ticker     bucket   score  name
+   OXY   upstream   +0.37  Occidental
+   DVN   upstream   +0.33  Devon Energy
+  FANG   upstream   +0.33  Diamondback
+   XOP        etf   +0.32  SPDR Oil & Gas E&P ETF
+   EOG   upstream   +0.30  EOG Resources
+   COP   upstream   +0.28  ConocoPhillips
+   USO        etf   +0.27  United States Oil Fund
+   HAL   services   +0.23  Halliburton
+   SLB   services   +0.20  SLB (Schlumberger)
+   CVX integrated   +0.15  Chevron
+   EPD  midstream   +0.15  Enterprise Products
+   PAA  midstream   +0.15  Plains All American
+   XOM integrated   +0.14  ExxonMobil
+    ET  midstream   +0.12  Energy Transfer
+  SHEL integrated   +0.11  Shell
+   PSX    refiner   -0.10  Phillips 66
+   MPC    refiner   -0.19  Marathon Petroleum
+   VLO    refiner   -0.20  Valero
+
+news (40 headlines, 8 matched):
+  + Oil Prices Rose After US Forces Downed Iranian Drones
+  + Crude Oil Weekly Outlook: Houthi Attacks vs. a Double Top?
+  - Oil prices set for second straight weekly drop on signs of growing suppl
+  + Oil Prices Rebound as Middle East Supply Risks Persist
+  + Oil Prices Drop as Investors Weigh Potential Hormuz Deal Between Iran, G
+  - Even with a durable ceasefire, these factors will support oil prices: BC
+INFO oilx.panel: flagged 2 suspect spot prints (|spot move|>12% while CL moved <4%)
+state exported: 60 KB
+
+===== cloud cycle 2026-11-14T08:57:29Z =====
+$ oilx kalshi-scan
+{'WTI': {'KXWTI': 60, 'KXWTIW': 27, 'KXWTIMONTHLY': 0}, 'fwd': 88.86}
+{'BRENT': {'KXBRENTW': 20, 'KXBRENTMON': 30}, 'fwd': 92.71}
+forward check: BRENT quote 95.84 vs the market's own 92.71 (3.4% apart) - too far to be a delay; every BRENT market is flagged and left alone this cycle
+shadow fill: no KXWTI-26NOV1614-T87.99 @0.39 (fair at quote 0.44)
+maker: 6 passive quotes staged for the demo trader (rejected: low_oi 73, stale_strip 50, wing 8)
+kalshi oil scan  (fwd 88.86, sigma 50%)
+------------------------------------------------------------------------------
+      KXWTI-26NOV1614-T90.99 yes @0.20+0.02 fee  model 0.28  edge +0.06     58.5h  oi 268
+      KXWTI-26NOV1614-T87.99  no @0.34+0.02 fee  model 0.41  edge +0.05     58.5h  oi 426
+      KXWTI-26NOV1614-T90.49 yes @0.26+0.02 fee  model 0.32  edge +0.04     58.5h  oi 504 [probe]
+      KXWTI-26NOV1614-T89.99 yes @0.32+0.02 fee  model 0.37  edge +0.03     58.5h  oi 1,729 [probe]
+-- 7 flagged (not tradable) --
+      KXWTI-26NOV1614-T85.99  no edge +0.10  [wing]
+      KXWTI-26NOV1614-T85.49  no edge +0.09  [wing]
+      KXWTI-26NOV1614-T91.49 yes edge +0.07  [wing]
+      KXWTI-26NOV1614-T91.99 yes edge +0.06  [wing]
+      KXWTI-26NOV1614-T84.49  no edge +0.05  [wing]
+KXBRENTMON-26NOV3017-T119.99  no edge +0.06  [stale_underlying,wing]
+      KXWTI-26NOV1614-T93.49 yes edge +0.04  [wing]
+$ oilx kalshi-demo
+demo balance $3,258.89; open contracts 1
+placed [main] yes x10 KXWTI-26NOV1614-T90.99 @0.20 (edge +0.06) -> canceled (nothing to trade against)
+placed [main] no x10 KXWTI-26NOV1614-T87.99 @0.34 (edge +0.05) -> canceled (nothing to trade against)
+placed [probe] yes x2 KXWTI-26NOV1614-T90.49 @0.26 (edge +0.04) -> canceled (nothing to trade against)
+placed [probe] yes x2 KXWTI-26NOV1614-T89.99 @0.32 (edge +0.03) -> canceled (nothing to trade against)
+maker: refreshing resting quotes
+  cancelled KXWTI-26NOV1614-T87.99 no x5.00
+  cancelled KXWTI-26NOV1614-T90.49 yes x5.00
+  cancelled KXWTI-26NOV1614-T88.49 yes x5.00
+  cancelled KXWTI-26NOV1614-T89.99 yes x5.00
+  resting yes x5 KXWTI-26NOV1614-T89.49 @0.39 (fair 0.42)
+  resting yes x5 KXWTI-26NOV1614-T88.49 @0.51 (fair 0.53)
+$ oilx equity-pick
+INFO oilx.panel: flagged 2 suspect spot prints (|spot move|>12% while CL moved <4%)
+equity desk  (crude view +0.27, crack -0.13, vol 52%, news tilt +0.05)
+------------------------------------------------------------------------------
+PICK: long OXY (Occidental, upstream)  score +0.37
+  because: crude view +0.27 x beta +1.30
+  strengths:  highest crude beta in the book (leverage + Permian scale)
+  weaknesses: debt-heavy; the same leverage cuts twice as hard on the way down
+WEAKEST EXPRESSION: VLO (score -0.20; crude view +0.27 x beta -0.20; crack view -0.13 x beta +1.10) - not a short call, just the worst wrapper for this view
+
+ticker     bucket   score  name
+   OXY   upstream   +0.37  Occidental
+   DVN   upstream   +0.33  Devon Energy
+  FANG   upstream   +0.33  Diamondback
+   XOP        etf   +0.32  SPDR Oil & Gas E&P ETF
+   EOG   upstream   +0.30  EOG Resources
+   COP   upstream   +0.28  ConocoPhillips
+   USO        etf   +0.27  United States Oil Fund
+   HAL   services   +0.23  Halliburton
+   SLB   services   +0.20  SLB (Schlumberger)
+   CVX integrated   +0.15  Chevron
+   EPD  midstream   +0.15  Enterprise Products
+   PAA  midstream   +0.15  Plains All American
+   XOM integrated   +0.14  ExxonMobil
+    ET  midstream   +0.12  Energy Transfer
+  SHEL integrated   +0.11  Shell
+   PSX    refiner   -0.10  Phillips 66
+   MPC    refiner   -0.19  Marathon Petroleum
+   VLO    refiner   -0.20  Valero
+
+news (40 headlines, 8 matched):
+  + Oil Prices Rose After US Forces Downed Iranian Drones
+  + Crude Oil Weekly Outlook: Houthi Attacks vs. a Double Top?
+  - Oil prices set for second straight weekly drop on signs of growing suppl
+  + Oil Prices Rebound as Middle East Supply Risks Persist
+  - Even with a durable ceasefire, these factors will support oil prices: BC
+  - Oil Prices Set for Second Weekly Decline Amid Growing Supply Surplus
+INFO oilx.panel: flagged 2 suspect spot prints (|spot move|>12% while CL moved <4%)
+state exported: 61 KB
