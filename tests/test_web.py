@@ -98,6 +98,8 @@ def test_cloud_state_export_is_self_contained(cfg, monkeypatch):
     """`oilx export-state` must produce everything the static dashboard reads, with no
     server behind it - that is what lets the bot run off the laptop entirely."""
     monkeypatch.setenv("GITHUB_REPOSITORY", "someone/oilx")
+    monkeypatch.delenv("KALSHI_DEMO_KEY_ID", raising=False)
+    monkeypatch.delenv("KALSHI_DEMO_PRIVATE_KEY", raising=False)
     (cfg.out_dir).mkdir(parents=True, exist_ok=True)
     (cfg.out_dir / "health.json").write_text(json.dumps({
         "ts": "2026-11-10T00:00:00+00:00", "ok": True, "schema_suspect": False,
@@ -108,6 +110,12 @@ def test_cloud_state_export_is_self_contained(cfg, monkeypatch):
     json.dumps(st)                                   # fully serialisable
     assert st["mode"] == "cloud" and st["repo"] == "someone/oilx"
     assert st["autotrade"] is True                   # the schedule IS the workflow
+    assert st["creds"] == {"key_id": "missing", "private_key": "missing"}   # names itself
+    monkeypatch.setenv("KALSHI_DEMO_KEY_ID", "0f8fad5b-d9cb-469f-a165-70867728950e")
+    monkeypatch.setenv("KALSHI_DEMO_PRIVATE_KEY", "not a pem")
+    c = web.build_state(cfg, mode="cloud")["creds"]
+    assert c == {"key_id": "present", "private_key": "wrong shape"}
+    assert "0f8fad5b" not in json.dumps(c)             # shape only, never the value
     assert st["cl_live"] == 86.44 and st["health"]["ok"] is True
     for key in ("price_series", "signals", "maker_quotes", "shadow_fills", "orders", "logs"):
         assert key in st

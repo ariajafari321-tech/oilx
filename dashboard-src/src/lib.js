@@ -157,7 +157,9 @@ export function deriveChecks(S) {
   } else if (S.signal_error) add("Signal inputs", "bad", S.signal_error);
   const d = S.demo || {};
   add("Practice account", d.error ? "bad" : "good", d.error
-    ? /credentials not found/.test(d.error) ? "The exchange keys aren't set where this bot runs, so it can read markets but can't place orders." : "Couldn't sign in: " + String(d.error).slice(0, 110)
+    ? S.creds && (S.creds.key_id !== "present" || S.creds.private_key !== "present")
+      ? "GitHub isn't handing the bot its keys: KALSHI_DEMO_KEY_ID is " + S.creds.key_id + ", KALSHI_DEMO_PRIVATE_KEY is " + S.creds.private_key + ". They must be repository secrets (not variables) with exactly those names."
+      : /credentials not found/.test(d.error) ? "The exchange keys aren't set where this bot runs, so it can read markets but can't place orders." : "Couldn't sign in: " + String(d.error).slice(0, 110)
     : "Signed in" + (S.api_latency_ms ? " in " + S.api_latency_ms + " ms." : "."));
   return out;
 }

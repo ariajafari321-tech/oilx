@@ -157,6 +157,15 @@ def build_state(cfg: Config, *, mode: str = "local", autotrade: bool | None = No
                  "autotrade": autotrade if autotrade is not None else mode == "cloud",
                  "repo": os.environ.get("GITHUB_REPOSITORY", "")}
 
+    if mode == "cloud":
+        # Which secrets actually reached the runner - presence and shape only, never a
+        # value - so a missing or mistyped secret names itself on the dashboard.
+        kid = os.environ.get("KALSHI_DEMO_KEY_ID", "").strip()
+        pem = os.environ.get("KALSHI_DEMO_PRIVATE_KEY", "").strip()
+        out["creds"] = {
+            "key_id": "missing" if not kid else "present" if 20 <= len(kid) <= 64 else "wrong shape",
+            "private_key": "missing" if not pem else "present" if ("-----BEGIN" in pem and len(pem) >= 1000) else "wrong shape"}
+
     # prices + crack from the raw cache (fast; no network)
     try:
         cl = pd.read_csv(cfg.raw_dir / "cl_front_daily.csv", parse_dates=["date"])
