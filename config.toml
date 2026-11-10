@@ -90,6 +90,12 @@ wing_z = 0.7                    # only trade/quote within this many settlement-h
                                 # matched market within ~1c inside 0.7 sd and was 2-4c too
                                 # cheap in BOTH wings (the vol smile a flat-vol model lacks).
                                 # Wing signals are still logged, flagged "wing", never traded.
+max_forward_gap_pct = 3.0       # Pricing uses the forward the market's own nearest strip implies
+                                # (right contract, as fresh as the book). The outside quote is
+                                # only a sanity check: a gap above this % means something is
+                                # broken and that underlying is left alone. (2026-11-10: the
+                                # old check compared the delayed quote within 0.1 sd, ~$0.11
+                                # near settlement, and switched the bot off every morning.)
 stale_sd_frac = 0.1             # max |quote - strip-implied forward|, in settlement-horizon
                                 # sd, before the whole strip is flagged and left alone.
                                 # Was 0.5 - far too loose: a forward that is wrong by x sd

@@ -137,10 +137,11 @@ export function deriveChecks(S) {
     if (stand.length) add("Price feed", "warn", "The live quote source didn't answer, so this cycle used a stand-in: " + stand[0].replace(" (live quote unavailable)", "") + ".");
     else add("Price feed", ne ? "warn" : "good", ne ? ne + " request" + (ne > 1 ? "s" : "") + " failed last cycle (" + h.network_errors[0] + ")." : "Live WTI, Brent and volatility quotes all arrived.");
     for (const [nm, fc] of Object.entries(h.fwd_check || {})) {
-      const off = fc.gap_sd > fc.limit_sd;
+      // newer bots report the gap in percent; older snapshots reported it in sd
+      const off = fc.gap_pct != null ? fc.gap_pct > fc.limit_pct : fc.gap_sd > fc.limit_sd;
       add(nm === "WTI" ? "WTI price check" : "Brent price check", off ? "warn" : "good", off
-        ? "The quote says $" + fc.quote.toFixed(2) + " but the market's own prices imply $" + fc.implied.toFixed(2) + ". Too far apart to trust, so these markets are left alone."
-        : "The quote and the market's own prices agree ($" + fc.quote.toFixed(2) + " vs $" + fc.implied.toFixed(2) + ").");
+        ? "An outside quote says $" + fc.quote.toFixed(2) + " but the market's own prices imply $" + fc.implied.toFixed(2) + ". Too far apart to be a delay, so these markets are left alone."
+        : "Priced off the market's own $" + fc.implied.toFixed(2) + "; the outside quote ($" + fc.quote.toFixed(2) + ") is close enough to be a normal delay.");
     }
     if (h.maker) {
       const rj = Object.entries(h.maker.rejects || {}).filter(([, v]) => v).sort((a, b) => b[1] - a[1]);

@@ -248,6 +248,7 @@ def main(argv: list[str] | None = None) -> int:
                                "CL=F", start="2026-09-01")["value"].iloc[-1]), "CL=F"), 0.0)]
         else:
             groups = []
+            pfs: dict = {}
             for name, series, symbol, extra in (
                     ("WTI", kc.get("series", kalshi.SERIES), "CL=F", 0.0),
                     ("BRENT", kc.get("brent_series", []), kc.get("brent_symbol", "BZ=F"),
@@ -263,31 +264,27 @@ def main(argv: list[str] | None = None) -> int:
                         net_err.append(f"{s}: {type(e).__name__}")
                 if not any(by_series.values()):
                     continue
-                f = args.forward if name == "WTI" else None
-                if f is None:
+                quote = args.forward if name == "WTI" else None
+                if quote is None:
                     try:
-                        f = _retry(lambda: float(data.fetch_yahoo(
+                        quote = _retry(lambda: float(data.fetch_yahoo(
                             symbol, start="2026-09-01")["value"].iloc[-1]), symbol)
-                        sources[name] = f"{symbol} live"
                     except Exception as e:
-                        # Fallback: the strip's own implied forward (the strike where the
-                        # market's mid crosses 50c). At-the-money the model then agrees
-                        # with the market by construction, so this can price the strip's
-                        # SHAPE but cannot detect a stale book - labelled in health.
                         net_err.append(f"{symbol}: {type(e).__name__}")
-                        allm = [m for mk in by_series.values() for m in mk]
-                        sv = kalshi.strip_view(allm, 1.0, 1.0)
-                        f = sv.get("implied_fwd") if sv else None
-                        if f is None:
-                            rng = kalshi.implied_forward_from_ranges(allm)
-                            f = rng[0] if rng else None
-                        if f is None:
-                            log.warning("%s forward unavailable (%s); group skipped", name, e)
-                            continue
-                        sources[name] = "strip-implied forward (live quote unavailable)"
-                        log.warning("%s quote unavailable; using strip-implied forward %.2f", name, f)
-                elif name == "WTI":
-                    sources[name] = "given on the command line"
+                allm = [m for mk in by_series.values() for m in mk]
+                pf = kalshi.pricing_forward(allm, quote,
+                                            max_gap_pct=float(kc.get("max_forward_gap_pct", 3.0)))
+                if pf is None:  # no quote and no threshold strip: last resort, range buckets
+                    rng = kalshi.implied_forward_from_ranges(allm)
+                    if not rng:
+                        log.warning("%s: no forward available; group skipped", name)
+                        continue
+                    pf = {"fwd": rng[0], "source": "ranges", "quote": None, "implied": None,
+                          "gap": None, "gap_pct": None, "limit_pct": None, "distrust": False}
+                f = pf["fwd"]
+                pfs[name] = pf
+                sources[name] = {"strip": "the market's own prices" + ("" if quote is not None else " (live quote unavailable)"),
+                                 "quote": f"{symbol} live", "ranges": "range buckets (live quote unavailable)"}[pf["source"]]
                 print({name: {k: len(v) for k, v in by_series.items()}, "fwd": round(f, 2)})
                 groups.append((name, by_series, f, extra))
         if not groups:
@@ -336,22 +333,14 @@ def main(argv: list[str] | None = None) -> int:
         import math as _math
         for name, by_series, f, extra in groups:
             fwds[name] = f
-            distrust = False
-            try:  # cross-check the quote against the strip's own implied forward
-                sv0 = kalshi.strip_view([m for mk in by_series.values() for m in mk], f, sigma)
-                if sv0 and sv0.get("implied_fwd"):
-                    sd_px = f * sigma * _math.sqrt(max(sv0["t_hours"], 0.01) / 8760)
-                    gap = f - sv0["implied_fwd"]
-                    fwd_check[name] = {"quote": round(f, 2), "implied": round(sv0["implied_fwd"], 2),
-                                       "gap": round(gap, 2), "gap_sd": round(abs(gap) / sd_px, 3),
-                                       "limit_sd": float(kc.get("stale_sd_frac", 0.1))}
-                    if abs(gap) / sd_px > float(kc.get("stale_sd_frac", 0.1)):
-                        distrust = True   # the quote is suspect: nothing priced off it trades
-                        print(f"forward check: {name} quote {f:.2f} vs strip-implied "
-                              f"{sv0['implied_fwd']:.2f} ({abs(gap) / sd_px:.2f} sd apart) - "
-                              f"every {name} market is flagged and left alone this cycle")
-            except Exception as e:
-                log.warning("forward check skipped for %s: %s", name, e)
+            pf = (pfs if not args.snapshot else {}).get(name)
+            distrust = bool(pf and pf["distrust"])
+            if pf and pf["quote"] is not None and pf["implied"] is not None:
+                fwd_check[name] = {k: pf[k] for k in ("quote", "implied", "gap", "gap_pct", "limit_pct")}
+                if distrust:
+                    print(f"forward check: {name} quote {pf['quote']:.2f} vs the market's own "
+                          f"{pf['implied']:.2f} ({pf['gap_pct']:.1f}% apart) - too far to be a "
+                          f"delay; every {name} market is flagged and left alone this cycle")
             for sname, mk in by_series.items():
                 h = kalshi.quote_health(mk)
                 health_series[sname] = h
@@ -374,7 +363,7 @@ def main(argv: list[str] | None = None) -> int:
                 quotes += kalshi.maker_quotes(
                     by_series, f, sigma, underlying=name, reject_counts=maker_rej,
                     wing_z=wing_z, distrust_forward=distrust,
-                    margin=float(maker_cfg.get("margin", 0.02)),
+                    margin=float(maker_cfg.get("margin", 0.02)) + extra,  # Brent pays for its proxy vol
                     max_depth=float(maker_cfg.get("max_depth", 0.06)),
                     min_oi=float(maker_cfg.get("min_open_interest", 500)),
                     max_quotes=int(maker_cfg.get("max_resting_orders", 6)),

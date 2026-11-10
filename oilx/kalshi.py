@@ -350,6 +350,46 @@ def strip_view(markets: list[dict], fwd: float, sigma: float, *, now: float | No
             "rows": rows}
 
 
+# ---------------------------------------------------------------- pricing forward
+
+def pricing_forward(markets: list[dict], quote: float | None, *, max_gap_pct: float = 3.0,
+                    now: float | None = None) -> dict | None:
+    """Which forward should price an underlying's markets, and can it be trusted?
+
+    The market's own nearest threshold strip implies a forward (the strike where its
+    mid crosses 50c). That number is for exactly the right contract and is as fresh as
+    the book itself, so it is the pricing forward whenever it exists. The external
+    quote (Yahoo, 10-15 minutes delayed, sometimes a different contract month) is
+    demoted to a sanity check: only a gap bigger than max_gap_pct means something is
+    actually broken.
+
+    Why this replaced the sd-based check (2026-11-10): the tolerance was 0.1 settlement
+    sd, which is ~$0.11 with five hours to settle. A delayed quote in a moving market
+    is routinely $0.50 off, so the guard switched the whole bot off every morning - it
+    was measuring the quote's delay, not the market's health.
+
+    The trade-off, stated plainly: priced off its own forward, the model agrees with
+    the market at the money by construction. What is left is the SHAPE of the curve
+    (the model's vol against the market's), so taker "edges" all but vanish and the
+    maker simply quotes a margin under a model fair that is anchored to the market.
+    """
+    sv = strip_view(markets, quote or 1.0, 1.0, now=now)
+    implied = sv.get("implied_fwd") if sv else None
+    if implied is None and quote is None:
+        return None
+    if implied is None:
+        return {"fwd": quote, "source": "quote", "quote": quote, "implied": None,
+                "gap": None, "gap_pct": None, "limit_pct": max_gap_pct, "distrust": False}
+    if quote is None:
+        return {"fwd": implied, "source": "strip", "quote": None, "implied": round(implied, 2),
+                "gap": None, "gap_pct": None, "limit_pct": max_gap_pct, "distrust": False}
+    gap = quote - implied
+    pct = abs(gap) / implied * 100
+    return {"fwd": implied, "source": "strip", "quote": round(quote, 2),
+            "implied": round(implied, 2), "gap": round(gap, 2), "gap_pct": round(pct, 2),
+            "limit_pct": max_gap_pct, "distrust": pct > max_gap_pct}
+
+
 # ---------------------------------------------------------------- maker quotes
 
 def shadow_fills(prev_quotes: list[dict], markets: list[dict], ts: str) -> list[dict]:

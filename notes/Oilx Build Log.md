@@ -6,6 +6,34 @@ tags: [oilx, log]
 Same format as the pmx [[Build Log]]: newest first; each entry records a decision, the
 alternative considered, and why.
 
+## 2026-11-10 (midday): the guard that switched the bot off every morning
+
+First full day in the cloud. Overnight it signed in and rested six WTI quotes; by 9:50am
+it had quoted nothing for hours. Cause: the forward check compared Yahoo's quote with
+the strip's implied forward and allowed 0.1 settlement sd. With five hours to settle
+that is about $0.11 - and a 10-15 minute delayed quote in a falling market was $0.60
+off. The guard was measuring the quote's delay, not the market's health, and it tripped
+harder the closer the strip got to settling. Yesterday's fix for the Brent
+contract-month error had been written in the wrong units.
+
+Change: `pricing_forward`. The market's own nearest threshold strip supplies the
+forward (right contract, as fresh as the book); the outside quote is only a sanity
+check, in percent (3%), which still catches a broken feed but not a late one. This
+also fixes Brent properly instead of benching it: priced off its own strip, the
+contract-month basis disappears. Brent still pays an extra 2c of margin for using WTI
+vol as a proxy.
+
+What that costs, stated plainly: anchored to the market's own forward, the model
+agrees with the market at the money by construction. The remaining opinion is the
+SHAPE of the curve. Taker edges all but vanish; the maker is quoting a margin under a
+market-anchored fair value, so its results will be about spread capture against
+adverse selection, not about a view on the level of oil.
+
+Also on record from this morning: two paper fills (yes above $85.49 at 54c, yes above
+$86.99 at 25c) as WTI fell from $85.8 to $84.8 through the quotes - adverse selection
+doing exactly what the shadow-fill rule was built to expose. They will be graded at
+settlement like everything else.
+
 ## 2026-11-10: the control room, rebuilt as a real front-end
 
 The dashboard is now a React + Tailwind + Recharts app (`dashboard-src/`), compiled by

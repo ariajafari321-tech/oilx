@@ -446,3 +446,23 @@ def test_distrusted_forward_blocks_every_strip_of_that_underlying():
     sigs = kalshi.scan({"X": cheap}, fwd=95.0, sigma=0.5, now=NOW, min_edge=0.03,
                        distrust_forward=True, stale_sd_frac=99)
     assert sigs and all("stale_underlying" in s.flags for s in sigs)
+
+
+def test_pricing_forward_uses_the_markets_own_forward():
+    """Live, 2026-11-10 morning: the delayed quote was $0.60 from the strip's forward with
+    five hours to settle, the sd-based guard called that 0.53 sd, and the bot quoted
+    nothing all day. A delayed quote is not a broken market."""
+    live = kalshi.load_snapshot(LIVE)
+    pf = kalshi.pricing_forward(live, 85.86, now=LIVE_NOW)          # quote 60c stale
+    assert pf["source"] == "strip" and abs(pf["fwd"] - 86.46) < 0.15
+    assert pf["distrust"] is False and pf["gap_pct"] < 1.0
+    # priced off its own forward, the strip still produces near-the-money quotes
+    assert kalshi.maker_quotes({"KXWTI": live}, pf["fwd"], 0.5737, now=LIVE_NOW, min_oi=300)
+    # a gap too big to be a delay still switches the underlying off
+    assert kalshi.pricing_forward(live, 80.0, now=LIVE_NOW)["distrust"] is True
+    # no quote at all: the strip alone is enough, and it says so
+    alone = kalshi.pricing_forward(live, None, now=LIVE_NOW)
+    assert alone["source"] == "strip" and alone["quote"] is None and alone["distrust"] is False
+    # no threshold strip: fall back to the quote
+    assert kalshi.pricing_forward([], 86.0)["source"] == "quote"
+    assert kalshi.pricing_forward([], None) is None
