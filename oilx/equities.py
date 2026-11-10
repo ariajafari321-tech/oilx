@@ -296,6 +296,9 @@ def run(cfg, pnl, *, quotes_fn=None) -> dict:
     with (cfg.out_dir / "equity_pick_log.jsonl").open("a") as f:
         slim = {k: out[k] for k in ("ts", "view", "pick", "avoid", "entry_quotes")}
         slim["tilt"] = tilt
+        # per-name scores each run, so the dashboard can draw how each name's fit to
+        # the view has moved (real history of the ranking - not stock prices)
+        slim["scores"] = {r["ticker"]: r["score"] for r in out["ranked"]}
         f.write(json.dumps(slim) + "\n")
     return out
 

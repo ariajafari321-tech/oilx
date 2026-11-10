@@ -463,6 +463,7 @@ def maker_quotes(markets_by_series: dict[str, list[dict]], fwd: float, sigma: fl
                     cands.append({"ticker": m["ticker"], "side": side, "price": round(px, 2),
                                   "fair": round(fair, 4), "oi": oi, "close_time": close_time,
                                   "mid": round((yb + ya) / 2, 4), "fwd": fwd, "sigma": sigma,
+                                  "book_bid": round(bid, 4), "book_ask": round(ask, 4),
                                   "t_hours": round(t_hours, 2), "underlying": underlying})
                     break  # one side per market
     cands.sort(key=lambda c: -c["oi"])

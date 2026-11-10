@@ -6,6 +6,24 @@ tags: [oilx, log]
 Same format as the pmx [[Build Log]]: newest first; each entry records a decision, the
 alternative considered, and why.
 
+## 2026-11-10: the control room, rebuilt as a real front-end
+
+The dashboard is now a React + Tailwind + Recharts app (`dashboard-src/`), compiled by
+Vite into ONE self-contained `oilx/dashboard.html` — scripts, styles and the Geist
+fonts are inlined, so the page still needs no CDN and no server-side assets, and the
+same file runs from `oilx serve`, from GitHub Pages, or offline. Rebuild with
+`cd dashboard-src && npm install && npm run build`.
+
+Decisions: a bento grid whose 1px dividers are the grid gap showing through (no card
+shadows); one accent, a burnished crude-gold, for the model and for anything
+clickable; desaturated green/red for bullish/bearish; numbers in a monospace face so
+columns align. Things the page deliberately does not fake: the "score trend"
+sparklines are each name's logged ranking score per cycle (they start empty and fill
+in), not stock prices the bot has no feed for; order "speed" is the measured
+round-trip of each order request, shown only where one was recorded; the connection
+latency is the last real sign-in time. New state fields to support that:
+`equity_scores`, `ms` on orders, `book_bid`/`book_ask` on quotes.
+
 ## 2026-11-09 (night): the scanner was blind for a month
 
 **The finding.** The bot never traded, and this log repeatedly called that discipline

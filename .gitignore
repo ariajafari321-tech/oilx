@@ -8,3 +8,7 @@ _state/
 # personal interview material stays on the laptop if the repo is ever made public
 notes/Interview Talking Points.md
 notes/oilx One-Pager.pdf
+
+# dashboard source: dependencies and intermediate build are not committed
+dashboard-src/node_modules/
+dashboard-src/dist/

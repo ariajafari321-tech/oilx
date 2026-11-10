@@ -238,6 +238,11 @@ def build_state(cfg: Config, *, mode: str = "local", autotrade: bool | None = No
     out["orders"] = _tail_jsonl(cfg.out_dir / "kalshi_orders.jsonl", 40)
     out["resting"] = (_read_json(cfg.out_dir / "kalshi_open_orders.json", {}) or {}).get("orders", [])
     out["equity"] = _read_json(cfg.out_dir / "equity_pick_latest.json")
+    hist: dict = {}
+    for row in _tail_jsonl(cfg.out_dir / "equity_pick_log.jsonl", 48):
+        for tk, sc in (row.get("scores") or {}).items():
+            hist.setdefault(tk, []).append(sc)
+    out["equity_scores"] = hist
     try:
         cp = cfg.out_dir / "curve_history.csv"
         if cp.exists():

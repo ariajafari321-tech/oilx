@@ -1,0 +1,32 @@
+@font-face {
+  font-family: "Geist Variable"; font-style: normal; font-display: swap; font-weight: 100 900;
+  src: url("../node_modules/@fontsource-variable/geist/files/geist-latin-wght-normal.woff2") format("woff2-variations");
+}
+@font-face {
+  font-family: "Geist Mono Variable"; font-style: normal; font-display: swap; font-weight: 100 900;
+  src: url("../node_modules/@fontsource-variable/geist-mono/files/geist-mono-latin-wght-normal.woff2") format("woff2-variations");
+}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { background: #09090b; color-scheme: dark; }
+  body { @apply bg-ink-950 font-sans text-zinc-100 antialiased; font-feature-settings: "ss01", "cv11"; }
+  ::selection { background: rgba(201, 162, 94, 0.3); }
+  :focus-visible { outline: 2px solid #c9a25e; outline-offset: 2px; border-radius: 4px; }
+  * { scrollbar-width: thin; scrollbar-color: #27272a transparent; }
+}
+@layer components {
+  .num { @apply font-mono tabular-nums tracking-tight; }
+  .label { @apply text-[11.5px] font-medium text-zinc-500; }
+  .cell { @apply relative bg-ink-900 p-5; }
+  .cell-title { @apply text-[13px] font-medium text-zinc-300; }
+  .btn { @apply inline-flex items-center justify-center gap-2 rounded-md border border-line bg-ink-800 px-3 py-2 text-[13px] font-medium text-zinc-200 transition duration-200 ease-spring hover:border-zinc-600 hover:bg-ink-700 active:scale-[.98] disabled:cursor-default disabled:opacity-40; }
+  .seg { @apply inline-flex rounded-md border border-line bg-ink-950 p-0.5; }
+  .seg button { @apply rounded-[5px] px-2.5 py-1 text-[12px] font-medium text-zinc-500 transition duration-200 ease-spring hover:text-zinc-300; }
+  .seg button[aria-selected="true"] { @apply bg-ink-700 text-zinc-100; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}

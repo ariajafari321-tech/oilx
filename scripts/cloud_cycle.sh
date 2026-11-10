@@ -33,6 +33,6 @@ python -m oilx export-state >>"$LOG" 2>&1 || echo "export-state failed" >>"$LOG"
 cp -r data/out/. "$STATE/out/"
 cp data/out/state.json "$STATE/state.json" 2>/dev/null || true
 cp oilx/dashboard.html "$STATE/index.html"
-cp oilx/vendor/*.js "$STATE/vendor/"
+cp oilx/vendor/*.js "$STATE/vendor/" 2>/dev/null || true   # legacy; the page is one file now
 touch "$STATE/.nojekyll"
 tail -n 25 "$LOG"

@@ -262,15 +262,17 @@ def _trade_signals(scan_path: Path, secrets_dir: Path, *,
             lines.append("stopped: open-contract cap reached")
             break
         try:
+            t0 = time.time()
             resp = client.create_order(s["ticker"], s["side"], c["size"], s["price"],
                                        tif="immediate_or_cancel")
+            ms = round((time.time() - t0) * 1000)
             status = (resp.get("order") or {}).get("status", "?")
             lines.append(f"placed [{tier}] {s['side']} x{c['size']} {s['ticker']} "
                          f"@{s['price']:.2f} (edge {s['edge']:+.2f}) -> {status}")
             _append_order(scan_path.parent, {"ticker": s["ticker"], "side": s["side"],
                                              "action": "buy", "count": c["size"],
                                              "price": s["price"], "edge": s["edge"],
-                                             "status": status, "tier": tier,
+                                             "status": status, "tier": tier, "ms": ms,
                                              "underlying": s.get("underlying", "WTI")})
             placed[tier] += 1
             held[s["ticker"]] = {"ticker": s["ticker"]}  # one order per market per run
@@ -327,8 +329,10 @@ def refresh_maker_quotes(out_dir: Path, client: DemoClient, *, held: dict,
             lines.append("  stopped: open-contract cap would be breached if all quotes filled")
             break
         try:
+            t0 = time.time()
             resp = client.create_order(q["ticker"], q["side"], contracts_per_order, q["price"],
                                        post_only=True)   # can only ever rest, never cross
+            ms = round((time.time() - t0) * 1000)
             order = resp.get("order") or {}
             lines.append(f"  resting {q['side']} x{contracts_per_order} {q['ticker']} "
                          f"@{q['price']:.2f} (fair {q['fair']:.2f})")
@@ -336,6 +340,7 @@ def refresh_maker_quotes(out_dir: Path, client: DemoClient, *, held: dict,
                                     "count": contracts_per_order, "price": q["price"],
                                     "edge": round(q["fair"] - q["price"], 4),
                                     "status": order.get("status", "resting"), "tier": "maker",
+                                    "ms": ms,
                                     "underlying": q.get("underlying", "WTI")})
             tracked.append({"order_id": order.get("order_id", ""), "ticker": q["ticker"],
                             "side": q["side"], "price": q["price"], "fair": q["fair"],

@@ -59,7 +59,7 @@ def test_state_endpoint_serves_without_network(cfg, monkeypatch):
     port = srv.server_address[1]
     try:
         page = urllib.request.urlopen(f"http://127.0.0.1:{port}/", timeout=10).read()
-        assert b"oilx control room" in page
+        assert b"oilx control room" in page.lower()
         # the page must load with no internet: no CDN references, charts vendored locally
         assert b"cdn." not in page and b"unpkg" not in page and b"https://cdn" not in page
         js = urllib.request.urlopen(f"http://127.0.0.1:{port}/vendor/lightweight-charts.js",

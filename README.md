@@ -139,3 +139,14 @@ The bot can run on GitHub's free hosted runners instead of this computer. One-ti
 
 Controls live in the *Actions* tab: **oilx control** (stop / resume / flatten) and
 **oilx cycle** (run now). Details: `notes/Cloud Mode.md`.
+
+## The dashboard source
+
+`oilx/dashboard.html` is a compiled single file. Its source is the React app in
+`dashboard-src/` (React, Tailwind, Recharts, Lucide). To change the UI:
+
+```
+cd dashboard-src
+npm install
+npm run build      # rewrites ../oilx/dashboard.html
+```
