@@ -243,7 +243,8 @@ def scan(markets_by_series: dict[str, list[dict]], fwd: float, sigma: float,
          min_hours: float = 2.0, max_days: float = 45.0, min_oi: float = 100.0,
          taker_rate: float = 0.07, stale_sd_frac: float = 0.1,
          probe_edge: float | None = None, underlying: str = "WTI",
-         wing_z: float = 0.7, distrust_forward: bool = False) -> list[Signal]:
+         wing_z: float = 0.7, distrust_forward: bool = False,
+         anchor: bool = False) -> list[Signal]:
     """probe_edge, if set below min_edge, emits a second tier of signals in
     [probe_edge, min_edge) tagged tier="probe" - tiny-size calibration trades whose whole
     purpose is to measure empirically whether sub-threshold edges are real. They are
@@ -268,12 +269,17 @@ def scan(markets_by_series: dict[str, list[dict]], fwd: float, sigma: float,
             if t_hours < min_hours or t_hours > max_days * 24:
                 continue
             t_years = (t_close - now) / YEAR_SEC
+            # anchor: a strip that implies its own forward is priced off THAT forward.
+            # Strips of one underlying can settle on different contracts (weekly vs
+            # monthly Brent sat $2 apart on 2026-11-10), so one forward per underlying
+            # mis-prices the others by the whole basis.
+            fwd_s = (implied_forward(strip) if anchor else None) or fwd
 
             # distrust_forward: the caller found this underlying's quote disagreeing with
             # its most precise strip, so NO strip priced off that quote can be trusted -
             # longer strips would otherwise slip through on their wider dollar tolerance.
             flags_strip = "stale_underlying" if distrust_forward or _strip_is_stale(
-                strip, fwd, sigma, t_years, stale_sd_frac) else ""
+                strip, fwd_s, sigma, t_years, stale_sd_frac) else ""
 
             for m in strip:
                 lo, hi = m.get("floor_strike"), m.get("cap_strike")
@@ -281,7 +287,7 @@ def scan(markets_by_series: dict[str, list[dict]], fwd: float, sigma: float,
                 oi = float(m.get("open_interest", 0) or 0)
                 if oi < min_oi:
                     continue
-                p = _fair_yes(m, fwd, sigma, t_years)
+                p = _fair_yes(m, fwd_s, sigma, t_years)
                 if p is None:
                     continue  # unknown structure: never price what we can't parse
                 mid = (yb + ya) / 2 if (yb > 0 or ya < 1) else None
@@ -296,7 +302,7 @@ def scan(markets_by_series: dict[str, list[dict]], fwd: float, sigma: float,
                     flags = flags_strip
                     if edge > suspect_edge:
                         flags = (flags + ",suspect").strip(",")
-                    z = moneyness_z(m, fwd, sigma, t_years)
+                    z = moneyness_z(m, fwd_s, sigma, t_years)
                     if z is not None and abs(z) > wing_z:
                         # logged (so wing "edges" can be graded later) but never traded
                         flags = (flags + ",wing").strip(",")
@@ -305,7 +311,7 @@ def scan(markets_by_series: dict[str, list[dict]], fwd: float, sigma: float,
                         strike=float(lo if lo is not None else hi),
                         side=side, price=round(price, 4), fee=fee, model_p=round(model_p, 4),
                         edge=round(edge, 4), kalshi_mid=round(mid, 4) if mid is not None else -1,
-                        fwd=fwd, sigma=sigma, t_hours=round(t_hours, 2), oi=oi, flags=flags,
+                        fwd=fwd_s, sigma=sigma, t_hours=round(t_hours, 2), oi=oi, flags=flags,
                         tier="main" if edge >= min_edge else "probe", underlying=underlying))
     signals.sort(key=lambda s: (s.flags != "", s.tier != "main", -s.edge))
     return signals
@@ -431,7 +437,7 @@ def maker_quotes(markets_by_series: dict[str, list[dict]], fwd: float, sigma: fl
                  stale_sd_frac: float = 0.1, underlying: str = "WTI",
                  max_depth: float = 0.06,
                  reject_counts: dict | None = None, wing_z: float = 0.7,
-                 distrust_forward: bool = False) -> list[dict]:
+                 distrust_forward: bool = False, anchor: bool = False) -> list[dict]:
     """Passive resting bids at model fair minus a margin, on liquid, non-stale strips.
 
     The taker scan asks "is the displayed price wrong by more than the fee?" - almost
@@ -469,7 +475,12 @@ def maker_quotes(markets_by_series: dict[str, list[dict]], fwd: float, sigma: fl
                 rej["window"] += len(strip)
                 continue
             t_years = (t_close - now) / YEAR_SEC
-            if distrust_forward or _strip_is_stale(strip, fwd, sigma, t_years, stale_sd_frac):
+            # anchor: a strip that implies its own forward is priced off THAT forward.
+            # Strips of one underlying can settle on different contracts (weekly vs
+            # monthly Brent sat $2 apart on 2026-11-10), so one forward per underlying
+            # mis-prices the others by the whole basis.
+            fwd_s = (implied_forward(strip) if anchor else None) or fwd
+            if distrust_forward or _strip_is_stale(strip, fwd_s, sigma, t_years, stale_sd_frac):
                 rej["stale_strip"] += len(strip)
                 continue
             for m in strip:
@@ -477,11 +488,11 @@ def maker_quotes(markets_by_series: dict[str, list[dict]], fwd: float, sigma: fl
                 if oi < min_oi:
                     _rej("low_oi")
                     continue
-                p = _fair_yes(m, fwd, sigma, t_years)
+                p = _fair_yes(m, fwd_s, sigma, t_years)
                 if p is None:
                     _rej("unparsable")
                     continue
-                z = moneyness_z(m, fwd, sigma, t_years)
+                z = moneyness_z(m, fwd_s, sigma, t_years)
                 if z is not None and abs(z) > wing_z:
                     _rej("wing")   # never quote where the flat-vol model is known wrong
                     continue
@@ -502,7 +513,7 @@ def maker_quotes(markets_by_series: dict[str, list[dict]], fwd: float, sigma: fl
                         continue
                     cands.append({"ticker": m["ticker"], "side": side, "price": round(px, 2),
                                   "fair": round(fair, 4), "oi": oi, "close_time": close_time,
-                                  "mid": round((yb + ya) / 2, 4), "fwd": fwd, "sigma": sigma,
+                                  "mid": round((yb + ya) / 2, 4), "fwd": fwd_s, "sigma": sigma,
                                   "book_bid": round(bid, 4), "book_ask": round(ask, 4),
                                   "t_hours": round(t_hours, 2), "underlying": underlying})
                     break  # one side per market

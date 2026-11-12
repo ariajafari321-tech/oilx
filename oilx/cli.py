@@ -353,6 +353,7 @@ def main(argv: list[str] | None = None) -> int:
                                 min_edge=base_edge + extra,
                                 probe_edge=(probe_base + extra) if probe_base is not None else None,
                                 underlying=name, wing_z=wing_z, distrust_forward=distrust,
+                                anchor=bool(pf and pf["source"] == "strip"),
                                 suspect_edge=float(kc.get("suspect_edge", 0.25)),
                                 min_hours=float(kc.get("min_hours_to_close", 2.0)),
                                 max_days=float(kc.get("max_days_to_close", 45)),
@@ -363,6 +364,7 @@ def main(argv: list[str] | None = None) -> int:
                 quotes += kalshi.maker_quotes(
                     by_series, f, sigma, underlying=name, reject_counts=maker_rej,
                     wing_z=wing_z, distrust_forward=distrust,
+                    anchor=bool(pf and pf["source"] == "strip"),
                     margin=float(maker_cfg.get("margin", 0.02)) + extra,  # Brent pays for its proxy vol
                     max_depth=float(maker_cfg.get("max_depth", 0.06)),
                     min_oi=float(maker_cfg.get("min_open_interest", 500)),

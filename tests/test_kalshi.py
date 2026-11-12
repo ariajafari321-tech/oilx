@@ -6,6 +6,8 @@ import math
 
 import pytest
 
+from datetime import datetime
+
 from oilx import kalshi
 from oilx.kalshi_demo import DemoClient
 
@@ -466,3 +468,29 @@ def test_pricing_forward_uses_the_markets_own_forward():
     # no threshold strip: fall back to the quote
     assert kalshi.pricing_forward([], 86.0)["source"] == "quote"
     assert kalshi.pricing_forward([], None) is None
+
+
+def test_each_strip_is_priced_off_its_own_forward():
+    """Live, 2026-11-10: weekly Brent implied ~$89.3 and monthly Brent ~$91.8. Pricing
+    the monthly strip off the weekly forward printed three same-direction 'signals' and
+    rested a NO bid above its true value. With anchoring each strip uses its own."""
+    now = NOW
+    def strip(close, center, prefix):
+        out = []
+        for k in (center - 4, center - 2, center, center + 2, center + 4):
+            t = (datetime.fromisoformat(close.replace("Z", "+00:00")).timestamp() - now) / kalshi.YEAR_SEC
+            p = kalshi.digital_above(center, k, 0.5, t)           # a market that IS the model at `center`
+            out.append({"ticker": f"{prefix}-T{k}", "strike_type": "greater", "floor_strike": k,
+                        "yes_bid": round(p - 0.01, 2), "yes_ask": round(p + 0.01, 2),
+                        "open_interest": 2000.0, "close_time": close})
+        return out
+    weekly, monthly = strip("2026-10-19T18:30:00Z", 89.3, "W"), strip("2026-11-04T18:30:00Z", 91.8, "M")
+    both = {"B": weekly + monthly}
+    # one forward for both: the monthly strip throws same-direction edges
+    loose = [s for s in kalshi.scan(both, 89.3, 0.5, now=now, min_edge=0.03, stale_sd_frac=99, wing_z=99) if not s.flags]
+    assert loose and {s.side for s in loose} == {"no"} and all(s.ticker.startswith("M") for s in loose)
+    # anchored: each strip agrees with its own market, nothing to trade, quotes sit under fair
+    assert [s for s in kalshi.scan(both, 89.3, 0.5, now=now, min_edge=0.03, anchor=True, wing_z=99) if not s.flags] == []
+    for q in kalshi.maker_quotes(both, 89.3, 0.5, now=now, anchor=True, min_oi=100, max_quotes=20):
+        assert q["price"] <= q["mid"] - 0.01 + 1e-9, q          # never bids above the market's mid
+        assert abs(q["fwd"] - (89.3 if q["ticker"].startswith("W") else 91.8)) < 0.6
